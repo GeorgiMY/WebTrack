@@ -12,8 +12,8 @@ using WebTrack.Data;
 namespace WebTrack.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260122153334_Initial")]
-    partial class Initial
+    [Migration("20260122161311_v2")]
+    partial class v2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -162,6 +162,21 @@ namespace WebTrack.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("UserWebsite", b =>
+                {
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("WebsitesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UsersId", "WebsitesId");
+
+                    b.HasIndex("WebsitesId");
+
+                    b.ToTable("UserWebsite");
+                });
+
             modelBuilder.Entity("VisitorWebsite", b =>
                 {
                     b.Property<Guid>("VisitorsId")
@@ -175,6 +190,52 @@ namespace WebTrack.Data.Migrations
                     b.HasIndex("WebsitesId");
 
                     b.ToTable("VisitorWebsite");
+                });
+
+            modelBuilder.Entity("WebTrack.Data.Entities.Session", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Browser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("DeviceType")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("EndedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LandingPagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Os")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Referrer")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<DateTime>("StartedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("VisitorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WebsiteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VisitorId");
+
+                    b.HasIndex("WebsiteId");
+
+                    b.ToTable("Sessions");
                 });
 
             modelBuilder.Entity("WebTrack.Data.Entities.User", b =>
@@ -261,24 +322,18 @@ namespace WebTrack.Data.Migrations
 
                     b.Property<string>("BaseUrl")
                         .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("OwnerUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OwnerUserId");
 
                     b.ToTable("Websites");
                 });
@@ -334,6 +389,21 @@ namespace WebTrack.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("UserWebsite", b =>
+                {
+                    b.HasOne("WebTrack.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebTrack.Data.Entities.Website", null)
+                        .WithMany()
+                        .HasForeignKey("WebsitesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("VisitorWebsite", b =>
                 {
                     b.HasOne("WebTrack.Data.Entities.Visitor", null)
@@ -349,20 +419,33 @@ namespace WebTrack.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebTrack.Data.Entities.Website", b =>
+            modelBuilder.Entity("WebTrack.Data.Entities.Session", b =>
                 {
-                    b.HasOne("WebTrack.Data.Entities.User", "OwnerUser")
-                        .WithMany("Websites")
-                        .HasForeignKey("OwnerUserId")
+                    b.HasOne("WebTrack.Data.Entities.Visitor", "Visitor")
+                        .WithMany("Sessions")
+                        .HasForeignKey("VisitorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OwnerUser");
+                    b.HasOne("WebTrack.Data.Entities.Website", "Website")
+                        .WithMany("Sessions")
+                        .HasForeignKey("WebsiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Visitor");
+
+                    b.Navigation("Website");
                 });
 
-            modelBuilder.Entity("WebTrack.Data.Entities.User", b =>
+            modelBuilder.Entity("WebTrack.Data.Entities.Visitor", b =>
                 {
-                    b.Navigation("Websites");
+                    b.Navigation("Sessions");
+                });
+
+            modelBuilder.Entity("WebTrack.Data.Entities.Website", b =>
+                {
+                    b.Navigation("Sessions");
                 });
 #pragma warning restore 612, 618
         }

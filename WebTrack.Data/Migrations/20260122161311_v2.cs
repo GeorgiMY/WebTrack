@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebTrack.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class v2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,6 +59,20 @@ namespace WebTrack.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Visitors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Websites",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    BaseUrl = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Websites", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -168,22 +182,57 @@ namespace WebTrack.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Websites",
+                name: "Sessions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    BaseUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OwnerUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    WebsiteId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    VisitorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Referrer = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
+                    LandingPagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeviceType = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    Browser = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    Os = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Websites", x => x.Id);
+                    table.PrimaryKey("PK_Sessions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Websites_AspNetUsers_OwnerUserId",
-                        column: x => x.OwnerUserId,
+                        name: "FK_Sessions_Visitors_VisitorId",
+                        column: x => x.VisitorId,
+                        principalTable: "Visitors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Sessions_Websites_WebsiteId",
+                        column: x => x.WebsiteId,
+                        principalTable: "Websites",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserWebsite",
+                columns: table => new
+                {
+                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    WebsitesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserWebsite", x => new { x.UsersId, x.WebsitesId });
+                    table.ForeignKey(
+                        name: "FK_UserWebsite_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserWebsite_Websites_WebsitesId",
+                        column: x => x.WebsitesId,
+                        principalTable: "Websites",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -252,14 +301,24 @@ namespace WebTrack.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_VisitorWebsite_WebsitesId",
-                table: "VisitorWebsite",
+                name: "IX_Sessions_VisitorId",
+                table: "Sessions",
+                column: "VisitorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sessions_WebsiteId",
+                table: "Sessions",
+                column: "WebsiteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserWebsite_WebsitesId",
+                table: "UserWebsite",
                 column: "WebsitesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Websites_OwnerUserId",
-                table: "Websites",
-                column: "OwnerUserId");
+                name: "IX_VisitorWebsite_WebsitesId",
+                table: "VisitorWebsite",
+                column: "WebsitesId");
         }
 
         /// <inheritdoc />
@@ -281,19 +340,25 @@ namespace WebTrack.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Sessions");
+
+            migrationBuilder.DropTable(
+                name: "UserWebsite");
+
+            migrationBuilder.DropTable(
                 name: "VisitorWebsite");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
                 name: "Visitors");
 
             migrationBuilder.DropTable(
                 name: "Websites");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }
