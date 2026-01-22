@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebTrack.Data.Entities
+﻿namespace WebTrack.Data.Entities
 {
     public class Visitor
     {
         public Guid Id { get; set; }
+
+        public ICollection<Website> Websites { get; set; } = new List<Website>();
     }
 }

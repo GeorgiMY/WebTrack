@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebTrack.Data.Entities
 {
     public class User : IdentityUser
     {
+        public ICollection<Website> Websites { get; set; } = new List<Website>();
     }
 }
