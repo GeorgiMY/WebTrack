@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTrack", "WebTrack.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTrack.Data", "..\WebTrack.Data\WebTrack.Data.csproj", "{18CFB820-F7BE-4635-889E-6AC7618414FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTrack.Tests", "..\WebTrack.Test\WebTrack.Tests.csproj", "{639BB5A7-328F-4064-B4F6-4D1D00311D0D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTrack.Core", "..\WebTrack.Core\WebTrack.Core.csproj", "{1852847E-343B-45F6-ADAE-4EDBF2039D11}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{18CFB820-F7BE-4635-889E-6AC7618414FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18CFB820-F7BE-4635-889E-6AC7618414FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18CFB820-F7BE-4635-889E-6AC7618414FE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{639BB5A7-328F-4064-B4F6-4D1D00311D0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{639BB5A7-328F-4064-B4F6-4D1D00311D0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{639BB5A7-328F-4064-B4F6-4D1D00311D0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{639BB5A7-328F-4064-B4F6-4D1D00311D0D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1852847E-343B-45F6-ADAE-4EDBF2039D11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1852847E-343B-45F6-ADAE-4EDBF2039D11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1852847E-343B-45F6-ADAE-4EDBF2039D11}.Release|Any CPU.ActiveCfg = Release|Any CPU
