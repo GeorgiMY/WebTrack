@@ -1,12 +1,15 @@
 import express, { Request, Response } from "express";
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
 const app = express();
 
+app.use(express.static(path.join(__dirname, '../../dist')));
+
 // Set up routes
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello, world!');
+    res.sendFile(path.join(__dirname, '../../src/test/index.html'));
 });
 
 // Start the server
