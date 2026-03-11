@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 using WebTrack.Data;
 using WebTrack.Data.Entities;
 
@@ -29,6 +30,15 @@ else
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    RoleManager<IdentityRole> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    UserManager<User> userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+    await DatabaseSeeder.Seed(context, roleManager, userManager);
 }
 
 app.UseHttpsRedirection();
