@@ -12,15 +12,15 @@ using WebTrack.Data;
 namespace WebTrack.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260122161311_v2")]
-    partial class v2
+    [Migration("20260312063116_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.23")
+                .HasAnnotation("ProductVersion", "8.0.25")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

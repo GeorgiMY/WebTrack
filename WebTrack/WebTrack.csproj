@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebTrack.Core\WebTrack.Core.csproj" />
     <ProjectReference Include="..\WebTrack.Data\WebTrack.Data.csproj" />
   </ItemGroup>
 

@@ -1,0 +1,33 @@
+﻿@using WebTrack.ViewModels
+@model IEnumerable<WebsiteListItemViewModel>
+
+<h1>My Websites</h1>
+
+@if (!Model.Any())
+{
+    <p>You do not have any websites yet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Base URL</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var website in Model)
+            {
+                <a href="/@website.Id">
+                    <tr>
+                        <td></td>
+                        <td>@website.BaseUrl</td>
+                        <td>@website.CreatedAtUtc</td>
+                    </tr>
+                </a>
+            }
+        </tbody>
+    </table>
+}

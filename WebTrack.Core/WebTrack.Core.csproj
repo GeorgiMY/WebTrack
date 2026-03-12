@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WebTrack.Data\WebTrack.Data.csproj" />
+  </ItemGroup>
+
 </Project>
