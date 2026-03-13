@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using WebTrack.Core.Contracts;
 using WebTrack.Core.Services;
 using WebTrack.Data;
 using WebTrack.Data.Entities;
+using Microsoft.AspNetCore.SignalR;
+using WebTrack.Hubs;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +26,21 @@ builder.Services.AddDefaultIdentity<User>(options =>
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSignalR();
+
 builder.Services.AddScoped<IWebsitesService, WebsitesService>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ViteClient", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
 
 WebApplication app = builder.Build();
 
@@ -50,9 +67,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseCors("ViteClient");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<MyHub>("/myhub");
 app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
