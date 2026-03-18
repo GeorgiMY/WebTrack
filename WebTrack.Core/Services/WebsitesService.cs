@@ -34,5 +34,21 @@ namespace WebTrack.Core.Services
             
             return userWebsites;
         }
+
+        // For admin
+        public async Task<List<WebsiteListItemDto>> GetAllWebsites()
+        {
+            List<WebsiteListItemDto> allWebsites = await _context.Websites
+                .Select(website => new WebsiteListItemDto
+                {
+                    Id = website.Id,
+                    Name = website.Name,
+                    BaseUrl = website.BaseUrl,
+                    CreatedAtUtc = website.CreatedAtUtc
+                })
+                .ToListAsync();
+
+            return allWebsites;
+        }
     }
 }

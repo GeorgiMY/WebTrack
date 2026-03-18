@@ -1,36 +1,51 @@
 import * as signalR from "@microsoft/signalr";
+import { StringifyEventInterface } from "./utils";
 
-function stringifyEvent(e: Event) {
-  const obj = {};
-  for (let k in e) {
-    obj[k] = e[k];
-  }
-  return JSON.stringify(obj, (k, v) => {
-    if (v instanceof Node) return 'Node';
-    if (v instanceof Window) return 'Window';
-    return v;
-  }, ' ');
-}
+const wsConnectionName = "ReceiveFromJs";
+const elementsOrderSeperator = "|";
+const URL = "https://localhost:7273/myhub"
 
-let EventCreator = async () : Promise<void> => {
+let InititateConnection = async (): Promise<signalR.HubConnection> => {
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("https://localhost:7273/myhub")
+        .withUrl(URL)
         .withAutomaticReconnect()
         .build();
 
     await connection.start();
 
+    return connection;
+}
+
+let InitiateAllEvents = async (connection: signalR.HubConnection): Promise<void> => {
     Object.keys(window).forEach(key => {
         if (/^on/.test(key)) {
-            window.addEventListener(key.slice(2), event => EventExecutor(event, connection));
+            window.addEventListener(key.slice(2), async event => connection.invoke(wsConnectionName, StringifyEventInterface(event)));
         }
     })
 }
 
-let EventExecutor = async (event: Event, connection: signalR.HubConnection) : Promise<void> => {
-    await connection.invoke("ReceiveFromJs", stringifyEvent(event));
-    // console.log(event);
-    
+let SendElementsOrder = async (connection: signalR.HubConnection, elementsOrder: string[]) => {
+    connection.invoke(wsConnectionName, elementsOrder.join(elementsOrderSeperator));
 }
 
-EventCreator();
+let Start = async (): Promise<void> => {
+    const frontEndData: Record<string, object> = {
+        "Window": window,
+        "Object": Object,
+        "Performance": performance,
+        "Intl": Intl,
+        "Local Storage": localStorage,
+        "Session Storage": sessionStorage
+    }
+
+    // Order of elements that are sent
+    const elementsOrder = Object.keys(frontEndData);
+
+    const connection = await InititateConnection();
+
+    await SendElementsOrder(connection, elementsOrder);
+
+    await InitiateAllEvents(connection);
+}
+
+Start();

@@ -14,7 +14,6 @@ namespace WebTrack.Hubs
         public Task ReceiveFromJs(string message)
         {
             _logger.LogInformation($"Received from JS: {message}");
-            Console.WriteLine(message);
             return Task.CompletedTask;
         }
     }
