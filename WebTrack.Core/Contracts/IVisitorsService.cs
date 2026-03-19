@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebTrack.Core.Contracts
 {
-    internal class IVisitorService
+    public interface IVisitorsService
     {
     }
 }

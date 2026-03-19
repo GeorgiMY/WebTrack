@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebTrack.Core.Contracts
 {
-    public interface IUsersService
+    public interface ISessionsService
     {
     }
 }
