@@ -1,0 +1,41 @@
+﻿@using WebTrack.Core.DTOs.Visitors
+@using WebTrack.Data.Entities
+
+@model IEnumerable<VisitorListItemDto>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <td>Websites</td>
+                <td>Sessions</td>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (VisitorListItemDto visitor in Model)
+            {
+                <tr>
+                    <td>
+                        @foreach (Website website in visitor.Websites)
+                        {
+                            <p>@website.Name - @website.BaseUrl</p>
+                        }
+                    </td>
+                    <td>
+                        @foreach (Session session in visitor.Sessions)
+                        {
+                            <p>@session.Referrer - @session.LandingPagePath</p>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

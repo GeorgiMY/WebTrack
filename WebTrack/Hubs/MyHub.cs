@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
+using System.Dynamic;
 
 namespace WebTrack.Hubs
 {
@@ -11,10 +13,12 @@ namespace WebTrack.Hubs
             _logger = logger;
         }
 
-        public Task ReceiveFromJs(string message)
+        public async Task ReceiveFromJs(string message)
         {
-            _logger.LogInformation($"Received from JS: {message}");
-            return Task.CompletedTask;
+            //_logger.LogInformation($"Received from JS: {message}");
+            //object messageObj = JsonConvert.DeserializeObject(message, typeof(ExpandoObject));
+
+            await Clients.All.SendAsync("ReceiveFromServer", message);
         }
     }
 }

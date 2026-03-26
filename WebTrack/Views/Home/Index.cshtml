@@ -1,8 +1,107 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>WebTrack • Educational Demo</title>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <style>
+        .warning-box {
+          border: 2px solid #dc3545;
+          background-color: #f8d7da;
+          color: #721c24;
+          padding: 1rem;
+          margin-bottom: 1.5rem;
+          border-radius: 0.375rem;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <section class="hero-section text-center">
+            <div class="container">
+                <h1 class="display-4">WebTrack</h1>
+                <p class="lead">
+                    Real‑time user activity monitoring educational demo.
+                </p>
+
+                <div class="warning-box">
+                    <strong>Warning:</strong> This project is provided for educational purposes only.
+                    Understanding how user activity can be monitored is important — but unauthorized
+                    tracking of individuals may be illegal and unethical.
+                </div>
+
+                <a href="https://github.com/GeorgiMY/WebTrack" class="btn btn-primary btn-lg" target="_blank">
+                    View on GitHub
+                </a>
+            </div>
+        </section>
+
+        <section class="my-5">
+            <h2>About WebTrack</h2>
+            <p>
+                <strong>WebTrack</strong> is a web application that allows you to observe what each
+                user is doing on a website in real time. Its purpose is to demonstrate how trivial
+                it can be for a server to monitor user behaviour online — often without a visitor
+                being aware that such monitoring is occurring. :contentReference[oaicite:2]{index=2}
+            </p>
+
+            <div class="alert alert-warning" role="alert">
+                ⚠️ <strong>Important Advisory:</strong> This tool is intended for demonstration,
+                testing, or research. It is not a finished security product and should not be
+                deployed against live systems without explicit permission. Misuse may violate
+                privacy laws or user consent requirements.
+            </div>
+        </section>
+
+        <section class="my-5">
+            <h2>Features</h2>
+            <ul>
+                <li>Real‑time event tracking</li>
+                <li>Control panel to view active sessions</li>
+                <li>Educational insights into web monitoring</li>
+                <li>ASP.NET backend with SignalR and Vue front‑end</li>
+            </ul>
+        </section>
+
+        <section class="my-5">
+            <h2>Technologies</h2>
+            <p>Main languages and components used in the project include:</p>
+            <ul>
+                <li>C# and ASP.NET for backend logic</li>
+                <li>Vue.js for front‑end UI</li>
+                <li>SignalR for real‑time communication</li>
+                <li>TailwindCSS (used within UI) :contentReference[oaicite:3]{index=3}</li>
+            </ul>
+        </section>
+
+        @section Scripts {
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
+            <script type="text/javascript">
+                const hasCreatedHTMLPage = false;
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/myhub") // relative path works if same origin
+                    .withAutomaticReconnect()
+                    .build();
+
+                connection.on("ReceiveFromServer", (data) => {
+                    if(!hasCreatedHTMLPage) {
+                        if (data.includes("<")) {
+                            const splitData = data.split("|")
+                            document.documentElement.innerHTML = splitData[splitData.length - 1]
+                            hasCreatedHTMLPage = true;
+                        }
+                    }
+
+                    console.log(data)
+                });
+
+                connection.start()
+                    .then(() => console.log("Connected to SignalR"))
+                    .catch(err => console.error(err));
+            </script>
+        }
+
+    </main>
+</body>
+</html>
