@@ -50,9 +50,15 @@ namespace WebTrack.Data
             if (result.Succeeded) await userManager.AddToRoleAsync(testUser, "User");
         }
 
+        //public static async Task SeedWebsites()
+        //{
+        //    string testWebsite = 
+        //}
+
         public static async Task Seed(ApplicationDbContext context, RoleManager<IdentityRole> roleManager, UserManager<User> userManager) {
             await SeedRoles(roleManager);
             await SeedAdmin(userManager);
+            await SeedUsers(userManager);
         }
     }
 }

@@ -1,0 +1,39 @@
+﻿@using WebTrack.Core.DTOs.Sessions
+@model IEnumerable<SessionListItemDto>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head><title></title></head>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <td>LandingPagePath</td>
+                    <td>Referrer</td>
+                    <td>Browser</td>
+                    <td>DeviceType</td>
+                    <td>StartedAtUtc</td>
+                    <td>EndedAtUtc</td>
+                    <td>Os</td>
+                    <td>VisitorId</td>
+                    <td>WebsiteId</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (SessionListItemDto session in Model)
+                {
+                    <tr>
+                        <td>@session.LandingPagePath</td>
+                        <td>@session.Referrer</td>
+                        <td>@session.Browser</td>
+                        <td>@session.DeviceType</td>
+                        <td>@session.StartedAtUtc</td>
+                        <td>@session.EndedAtUtc</td>
+                        <td>@session.Os</td>
+                        <td>@session.VisitorId</td>
+                        <td>@session.WebsiteId</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </body>
+</html>

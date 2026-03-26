@@ -1,0 +1,13 @@
+{
+  "name": "tracker",
+  "private": true,
+  "version": "0.0.0",
+  "main": "./src/main.ts",
+  "scripts": {},
+  "devDependencies": {
+    "typescript": "~5.9.3"
+  },
+  "dependencies": {
+    "@microsoft/signalr": "^10.0.0"
+  }
+}

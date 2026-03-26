@@ -1,0 +1,55 @@
+﻿@using WebTrack.Data.Entities
+
+@model IEnumerable<User>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>Email</td>
+                <td>PhoneNumber</td>
+                <td>UserName</td>
+                <td>Websites</td>
+                <td>AccessFailedCount</td>
+                <td>ConcurrencyStamp</td>
+                <td>EmailConfirmed</td>
+                <td>LockoutEnabled</td>
+                <td>LockoutEnd</td>
+                <td>PhoneNumberConfirmed</td>
+                <td>TwoFactorEnabled</td>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (User user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Email</td>
+                    <td>@user.PhoneNumber</td>
+                    <td>@user.UserName</td>
+                    <td>
+                        @foreach (Website website in user.Websites)
+                        {
+                            <p>@website.Name - @website.BaseUrl</p>
+                        }
+                    </td>
+                    <td>@user.AccessFailedCount</td>
+                    <td>@user.ConcurrencyStamp</td>
+                    <td>@user.EmailConfirmed</td>
+                    <td>@user.LockoutEnabled</td>
+                    <td>@user.LockoutEnd</td>
+                    <td>@user.PhoneNumberConfirmed</td>
+                    <td>@user.TwoFactorEnabled</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

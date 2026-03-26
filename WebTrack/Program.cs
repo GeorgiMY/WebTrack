@@ -5,7 +5,6 @@ using WebTrack.Core.Contracts;
 using WebTrack.Core.Services;
 using WebTrack.Data;
 using WebTrack.Data.Entities;
-using Microsoft.AspNetCore.SignalR;
 using WebTrack.Hubs;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -29,6 +28,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IWebsitesService, WebsitesService>();
+builder.Services.AddScoped<IVisitorsService, VisitorsService>();
+builder.Services.AddScoped<ISessionsService, SessionsService>();
 
 builder.Services.AddCors(options =>
 {

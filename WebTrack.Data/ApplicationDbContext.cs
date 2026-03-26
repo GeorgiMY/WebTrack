@@ -6,7 +6,6 @@ namespace WebTrack.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {
-        public DbSet<User> Users { get; set; }
         public DbSet<Website> Websites { get; set; }
         public DbSet<Visitor> Visitors { get; set; }
         public DbSet<Session> Sessions { get; set; }
