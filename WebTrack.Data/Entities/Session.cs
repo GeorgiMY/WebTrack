@@ -2,8 +2,8 @@
 {
     public class Session
     {
-        public Guid Id { get; set; }
-        
+        public Guid Id { get; set; } = Guid.NewGuid();
+
         public Guid WebsiteId { get; set; }
         public Website Website { get; set; } = null!;
         

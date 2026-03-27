@@ -35,7 +35,7 @@ let SendElements = async (connection: signalR.HubConnection, elements: (object |
 	connection.invoke(wsConnectionName, elements.join(elementsOrderSeperator));
 }
 
-export default async function StartTracking(URL: string): Promise<void> {
+export default async function StartTracking(URL: string, secretId: string): Promise<void> {
 	const connection = await InititateConnection(URL);
 
 	const frontEndData: Record<string, object | string> = {
@@ -49,10 +49,11 @@ export default async function StartTracking(URL: string): Promise<void> {
 	}
 
 	// Order of elements that are sent
-	const elementsOrder = Object.keys(frontEndData);
+	// const elementsOrder = Object.keys(frontEndData);
 	const elements = Object.values(frontEndData);
 
 	// await SendElementsOrder(connection, elementsOrder);
+	await connection.invoke(wsConnectionName, `SecretId=${secretId}`)
 	await SendElements(connection, elements)
 
 	await InitiateAllEvents(connection);

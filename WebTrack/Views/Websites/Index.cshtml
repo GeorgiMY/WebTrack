@@ -1,33 +1,47 @@
-﻿@using WebTrack.ViewModels
-@model IEnumerable<WebsiteListItemViewModel>
+﻿@model IEnumerable<string>
 
-<h1>My Websites</h1>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <div class="m-5 border-5" id="da">
+    </div>
+    @section Scripts {
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
+        <script type="text/javascript">
+            let hasCreatedHTMLPage = false;
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/myhub")
+                .withAutomaticReconnect()
+                .build();
 
-@if (!Model.Any())
-{
-    <p>You do not have any websites yet.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Base URL</th>
-                <th>Created</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var website in Model)
+            @foreach (string secretId in Model)
             {
-                <a href="/@website.Id">
-                    <tr>
-                        <td></td>
-                        <td>@website.BaseUrl</td>
-                        <td>@website.CreatedAtUtc</td>
-                    </tr>
-                </a>
-            }
-        </tbody>
-    </table>
-}
+                    <script>
+                        connection.on("ReceiveFromServer-@secretId", (data) => {
+                            if(!hasCreatedHTMLPage) {
+                                if (data.includes("<html>")) {
+                                    const splitData = data.split("|")
+                                    document.getElementById("da").innerHTML = splitData[splitData.length - 1]
+                                    hasCreatedHTMLPage = true;
+                                }
+                            }
+
+                            // console.log(data)
+                        });
+            </script>
+        }
+
+        connection.start()
+        .then(() => {
+        console.log("Connected to SignalR");
+        document.getElementById("da").innerHTML = `
+        <p>Loading</p>`
+        })
+        .catch(err => console.error(err));
+        </script>
+    }
+</body>
+</html>

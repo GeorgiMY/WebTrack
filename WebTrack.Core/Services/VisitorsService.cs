@@ -2,6 +2,7 @@
 using WebTrack.Core.Contracts;
 using WebTrack.Core.DTOs.Visitors;
 using WebTrack.Data;
+using WebTrack.Data.Entities;
 
 namespace WebTrack.Core.Services
 {
@@ -12,6 +13,22 @@ namespace WebTrack.Core.Services
         public VisitorsService(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<List<VisitorListItemDto>> GetAllUserVisitors(string currentUserId)
+        {
+            List<VisitorListItemDto> allUserVisitors = await _context.Visitors
+                .Where(visitor => visitor.Websites
+                    .Any(website => website.Users
+                        .Any(user => user.Id == currentUserId)))
+                .Select(visitorListItemDto => new VisitorListItemDto
+                {
+                    Sessions = visitorListItemDto.Sessions,
+                    Websites = visitorListItemDto.Websites
+                })
+                .ToListAsync();
+
+            return allUserVisitors;
         }
 
         // For admin

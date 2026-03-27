@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using WebTrack.Data.Entities;
 
 namespace WebTrack.Core.Contracts
 {
     public interface IUsersService
     {
+        List<User> GetAllVisitors();
     }
 }

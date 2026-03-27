@@ -74,34 +74,6 @@
                 <li>TailwindCSS (used within UI) :contentReference[oaicite:3]{index=3}</li>
             </ul>
         </section>
-
-        @section Scripts {
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
-            <script type="text/javascript">
-                const hasCreatedHTMLPage = false;
-                const connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/myhub") // relative path works if same origin
-                    .withAutomaticReconnect()
-                    .build();
-
-                connection.on("ReceiveFromServer", (data) => {
-                    if(!hasCreatedHTMLPage) {
-                        if (data.includes("<")) {
-                            const splitData = data.split("|")
-                            document.documentElement.innerHTML = splitData[splitData.length - 1]
-                            hasCreatedHTMLPage = true;
-                        }
-                    }
-
-                    console.log(data)
-                });
-
-                connection.start()
-                    .then(() => console.log("Connected to SignalR"))
-                    .catch(err => console.error(err));
-            </script>
-        }
-
     </main>
 </body>
 </html>

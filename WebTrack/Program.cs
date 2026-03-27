@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using WebTrack.Core.Contracts;
 using WebTrack.Core.Services;
@@ -30,6 +29,7 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped<IWebsitesService, WebsitesService>();
 builder.Services.AddScoped<IVisitorsService, VisitorsService>();
 builder.Services.AddScoped<ISessionsService, SessionsService>();
+builder.Services.AddScoped<IUsersService, UsersService>();
 
 builder.Services.AddCors(options =>
 {
@@ -73,7 +73,7 @@ app.UseCors("ViteClient");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHub<MyHub>("/myhub");
+app.MapHub<WebSocketHub>("/myhub");
 app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 

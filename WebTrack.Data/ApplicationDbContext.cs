@@ -33,9 +33,10 @@ namespace WebTrack.Data
                       .IsRequired();
 
                 entity.HasMany(website => website.Users)
-                      .WithMany(user => user.Websites)
-                      //.UsingEntity(j => j.ToTable("WebsiteUsers"))
-                      ;
+                      .WithMany(user => user.Websites);
+
+                entity.HasIndex(website => website.BaseUrl)
+                    .IsUnique();
             });
 
             // VISITOR
@@ -44,18 +45,14 @@ namespace WebTrack.Data
                 entity.HasKey(visitor => visitor.Id);
 
                 entity.HasMany(visitor => visitor.Websites)
-                      .WithMany(website => website.Visitors)
-                      //.UsingEntity(j => j.ToTable("WebsiteVisitors"))
-                      ;
+                      .WithMany(website => website.Visitors);
             });
 
             // USER (Identity user)
             builder.Entity<User>(entity =>
             {
                 entity.HasMany(user => user.Websites)
-                      .WithMany(website => website.Users)
-                      //.UsingEntity(j => j.ToTable("WebsiteUsers"))
-                      ;
+                      .WithMany(website => website.Users);
             });
 
             builder.Entity<Session>(entity =>

@@ -4,6 +4,7 @@ namespace WebTrack.Core.Contracts
 {
     public interface ISessionsService
     {
+        Task<List<SessionListItemDto>> GetAllUserSessions(string currentUserId);
         Task<List<SessionListItemDto>> GetAllSessions();
     }
 }

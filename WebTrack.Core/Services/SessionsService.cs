@@ -14,6 +14,30 @@ namespace WebTrack.Core.Services
             _context = context;
         }
 
+        public async Task<List<SessionListItemDto>> GetAllUserSessions(string currentUserId)
+        {
+            List<SessionListItemDto> allSessions = await _context.Sessions
+                .Where(session => session.Website.Users
+                    .Any(user => user.Id == currentUserId))
+                
+                .Select(session => new SessionListItemDto
+                {
+                    WebsiteId = session.WebsiteId,
+                    VisitorId = session.VisitorId,
+                    StartedAtUtc = session.StartedAtUtc,
+                    EndedAtUtc = session.EndedAtUtc,
+                    Referrer = session.Referrer,
+                    LandingPagePath = session.LandingPagePath,
+                    DeviceType = session.DeviceType,
+                    Browser = session.Browser,
+                    Os = session.Os,
+
+                })
+                .ToListAsync();
+
+            return allSessions;
+        }
+
         // For admin
         public async Task<List<SessionListItemDto>> GetAllSessions()
         {
