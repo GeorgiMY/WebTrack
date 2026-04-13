@@ -3,44 +3,52 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title></title>
+    <link rel="stylesheet" href="~/css/websites.css" asp-append-version="true" />
+    <title>Tracking</title>
 </head>
 <body>
-    <div class="m-5 border-5" id="da">
-    </div>
+    <div class="m-5 border-5" id="da"></div>
+    <div id="remote-cursor"></div>
+
     @section Scripts {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
         <script type="text/javascript">
             let hasCreatedHTMLPage = false;
+            
+            const cursorElement = document.getElementById("remote-cursor");
+
             const connection = new signalR.HubConnectionBuilder()
                 .withUrl("/myhub")
                 .withAutomaticReconnect()
                 .build();
 
-            @foreach (string secretId in Model)
-            {
-                    <script>
-                        connection.on("ReceiveFromServer-@secretId", (data) => {
-                            if(!hasCreatedHTMLPage) {
-                                if (data.includes("<html>")) {
-                                    const splitData = data.split("|")
-                                    document.getElementById("da").innerHTML = splitData[splitData.length - 1]
-                                    hasCreatedHTMLPage = true;
-                                }
-                            }
+            connection.start()
+                .then(() => {
+                    console.log("Connected to SignalR");
+                    document.getElementById("da").innerHTML = `
+                    <p>Loading</p>`
+                })
+                .catch(err => console.error(err));
 
-                            // console.log(data)
-                        });
-            </script>
-        }
+            connection.on("ReceiveFromServer-dadada", (data) => {
+                if (!hasCreatedHTMLPage) {
+                    if (data.includes("<body>")) {
+                        const splitData = data.split("|")
+                        document.getElementById("da").innerHTML = splitData[splitData.length - 1]
+                        hasCreatedHTMLPage = true;
+                    }
+                }
 
-        connection.start()
-        .then(() => {
-        console.log("Connected to SignalR");
-        document.getElementById("da").innerHTML = `
-        <p>Loading</p>`
-        })
-        .catch(err => console.error(err));
+                const parsedData = JSON.parse(data);
+                if (parsedData.x !== undefined && parsedData.y !== undefined) {
+                    if (cursorElement.style.display === "none" || cursorElement.style.display === "") {
+                        cursorElement.style.display = "block";
+                    }
+                    cursorElement.style.transform = `translate(${parsedData.x}px, ${parsedData.y}px)`;
+                }
+
+                console.log(data)
+            });
         </script>
     }
 </body>

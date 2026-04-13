@@ -332,6 +332,9 @@ namespace WebTrack.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BaseUrl")
+                        .IsUnique();
+
                     b.ToTable("Websites");
                 });
 

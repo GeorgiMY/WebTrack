@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
-using WebTrack.Data;
-using WebTrack.Data.Entities;
+﻿using Microsoft.AspNetCore.SignalR;
 
 namespace WebTrack.Hubs
 {
@@ -16,11 +13,16 @@ namespace WebTrack.Hubs
 
         public async Task ReceiveFromJs(string message)
         {
-            string secretId = "";
-            if (message.Contains("SecretId"))
+            var httpContext = Context.GetHttpContext();
+            var secretId = httpContext?.Request.Query["secret_id"].ToString();
+
+            if (!string.IsNullOrEmpty(secretId))
             {
-                secretId = message.Split("=")[1];
                 await Clients.All.SendAsync($"ReceiveFromServer-{secretId}", message);
+            }
+            else
+            {
+                _logger.LogWarning("Received message from a connection without a secret_id.");
             }
 
             // For debugging

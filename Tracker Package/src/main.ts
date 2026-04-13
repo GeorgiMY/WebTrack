@@ -28,15 +28,15 @@ let SendElementsOrder = async (connection: signalR.HubConnection, elementsOrder:
 	connection.invoke(wsConnectionName, elementsOrder.join(elementsOrderSeperator));
 
 let SendElements = async (connection: signalR.HubConnection, elements: (object | string)[]) => {
-	elements
+	const payload = elements
 		.map(e => typeof e === "string" ? e : JSON.stringify(e))
 		.join(elementsOrderSeperator)
 
-	connection.invoke(wsConnectionName, elements.join(elementsOrderSeperator));
+	connection.invoke(wsConnectionName, payload);
 }
 
 export default async function StartTracking(URL: string, secretId: string): Promise<void> {
-	const connection = await InititateConnection(URL);
+	const connection = await InititateConnection(`${URL}?secret_id=${secretId}`);
 
 	const frontEndData: Record<string, object | string> = {
 		// "Window": window,
@@ -53,7 +53,6 @@ export default async function StartTracking(URL: string, secretId: string): Prom
 	const elements = Object.values(frontEndData);
 
 	// await SendElementsOrder(connection, elementsOrder);
-	await connection.invoke(wsConnectionName, `SecretId=${secretId}`)
 	await SendElements(connection, elements)
 
 	await InitiateAllEvents(connection);

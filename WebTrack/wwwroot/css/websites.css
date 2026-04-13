@@ -1,0 +1,18 @@
+﻿#remote-cursor {
+    /* Make it float over everything */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99999;
+    /* Make it look like a cursor (a red dot for now) */
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 50%;
+    /* Prevents the cursor from blocking clicks on the page beneath it */
+    pointer-events: none;
+    /* Hide it initially until provided coordinates */
+    display: none;
+    /* Add a tiny transition to smooth out the movement */
+/*    transition: transform 0.05s linear;*/
+}

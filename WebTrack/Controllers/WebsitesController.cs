@@ -23,7 +23,6 @@ namespace WebTrack.Controllers
             _context = context;
         }
 
-        [HttpGet]
         public async Task<IActionResult> Index()
         {
             List<WebsiteListItemDto> websiteDtos = new List<WebsiteListItemDto>();
