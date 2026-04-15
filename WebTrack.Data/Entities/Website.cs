@@ -5,6 +5,7 @@
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; } = null!;
         public string BaseUrl { get; set; } = null!;
+        public string WsSecret { get; set; } = null!;
         public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
 
         public ICollection<User> Users { get; set; } = new List<User>();

@@ -68,6 +68,7 @@ namespace WebTrack.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     BaseUrl = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    WsSecret = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

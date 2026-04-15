@@ -60,7 +60,7 @@ using (IServiceScope scope = app.Services.CreateScope())
     RoleManager<IdentityRole> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     UserManager<User> userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
-    await DatabaseSeeder.Seed(context, roleManager, userManager);
+    await DatabaseSeeder.Seed(roleManager, userManager, context);
 }
 
 app.UseHttpsRedirection();

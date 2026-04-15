@@ -12,7 +12,7 @@ using WebTrack.Data;
 namespace WebTrack.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260328230431_Initial")]
+    [Migration("20260415115311_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -332,6 +332,10 @@ namespace WebTrack.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("WsSecret")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

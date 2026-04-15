@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using WebTrack.Core.Contracts;
 using WebTrack.Core.DTOs.Websites;
@@ -38,12 +39,11 @@ namespace WebTrack.Controllers
                 if (string.IsNullOrEmpty(currentUserId)) return Unauthorized();
 
                 websiteDtos = await _websitesService.GetAllUserWebsites(currentUserId);
-
             }
-
             List<string> websiteIds = websiteDtos.Select(website => website.Id.ToString()).ToList();
+            Console.WriteLine(websiteIds);
 
-            return View(websiteIds);
+            return View(websiteDtos);
         }
 
         [HttpGet]
@@ -58,7 +58,7 @@ namespace WebTrack.Controllers
         {
             // Checks
             //----------------------------------------------------------
-            if (!ModelState.IsValid) return View(websiteCreateDto);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             Website? website = _context.Websites.Where(website => website.BaseUrl == websiteCreateDto.BaseUrl).FirstOrDefault();
             if (website != null) return View(websiteCreateDto);
@@ -70,7 +70,8 @@ namespace WebTrack.Controllers
             website = new Website()
             {
                 Name = websiteCreateDto.Name,
-                BaseUrl = websiteCreateDto.BaseUrl
+                BaseUrl = websiteCreateDto.BaseUrl,
+                WsSecret = websiteCreateDto.WsSecret
             };
 
             website.Users.Add(currentUser);
@@ -79,6 +80,16 @@ namespace WebTrack.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            Website? website = await _context.Websites.FindAsync(id);
+
+            if (website == null) return NotFound();
+
+            return View(website);
         }
     }
 }

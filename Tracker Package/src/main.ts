@@ -36,7 +36,7 @@ let SendElements = async (connection: signalR.HubConnection, elements: (object |
 }
 
 export default async function StartTracking(URL: string, secretId: string): Promise<void> {
-	const connection = await InititateConnection(`${URL}?secret_id=${secretId}`);
+	const connection = await InititateConnection(`${URL}/myhub?secret_id=${secretId}`);
 
 	const frontEndData: Record<string, object | string> = {
 		// "Window": window,
