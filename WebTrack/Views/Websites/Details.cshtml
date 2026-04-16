@@ -10,52 +10,11 @@
 <body>
     <h1>@Model.Name</h1>
     <p>Secret - @Model.WsSecret</p>
-    <div class="m-5 border-5" id="da"></div>
-    <div id="remote-cursor"></div>
 
     @section Scripts {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
-        <script type="text/javascript">
-            let hasCreatedHTMLPage = false;
-            
-            const cursorElement = document.getElementById("remote-cursor");
-
-            const connection = new signalR.HubConnectionBuilder()
-                .withUrl("/myhub")
-                .withAutomaticReconnect()
-                .build();
-
-            connection.start()
-                .then(() => {
-                    console.log("Connected to SignalR");
-                    document.getElementById("da").innerHTML = `
-                    <p>Loading</p>
-                    <p>If you know there's a visitor on your website but the screen takes too long to render check your secret and make sure it doesn't mismatch</p>`
-                })
-                .catch(err => console.error(err));
-
-            let wsSecret = "@Model.WsSecret"
-
-            connection.on(`ReceiveFromServer-${wsSecret}`, (data) => {
-                if (!hasCreatedHTMLPage) {
-                    if (data.includes("<body>")) {
-                        const splitData = data.split("|")
-                        document.getElementById("da").innerHTML = splitData[splitData.length - 1]
-                        hasCreatedHTMLPage = true;
-                    }
-                }
-
-                const parsedData = JSON.parse(data);
-                if (parsedData.x !== undefined && parsedData.y !== undefined) {
-                    if (cursorElement.style.display === "none" || cursorElement.style.display === "") {
-                        cursorElement.style.display = "block";
-                    }
-                    cursorElement.style.transform = `translate(${parsedData.x}px, ${parsedData.y}px)`;
-                }
-
-                console.log(data)
-            });
-        </script>
+        <script src="~/js/websites.js" asp-append-version="true"></script>
+        <script type="text/javascript">initializeTracking("@Model.WsSecret")</script>
     }
 </body>
 </html>

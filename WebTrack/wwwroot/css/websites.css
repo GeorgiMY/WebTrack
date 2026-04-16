@@ -1,4 +1,4 @@
-﻿#remote-cursor {
+﻿.remote-cursor {
     /* Make it float over everything */
     position: absolute;
     top: 0;

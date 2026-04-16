@@ -16,16 +16,18 @@ let InititateConnection = async (URL: string): Promise<signalR.HubConnection> =>
 	return connection;
 }
 
-let InitiateAllEvents = async (connection: signalR.HubConnection): Promise<void> => {
+let InitiateAllEvents = async (connection: signalR.HubConnection, visitorId: string): Promise<void> => {
 	Object.keys(window).forEach(key => {
 		if (/^on/.test(key)) {
-			window.addEventListener(key.slice(2), async event => connection.invoke(wsConnectionName, StringifyEventInterface(event)));
+			window.addEventListener(key.slice(2), async event => {
+				const stringifiedEvent = StringifyEventInterface(event);
+				const eventWithId = stringifiedEvent.slice(0, stringifiedEvent.length-2) + `,\n  "visitorId": "${visitorId}"\n}`;
+
+				connection.invoke(wsConnectionName, eventWithId)
+			});
 		}
 	})
 }
-
-let SendElementsOrder = async (connection: signalR.HubConnection, elementsOrder: string[]) => 
-	connection.invoke(wsConnectionName, elementsOrder.join(elementsOrderSeperator));
 
 let SendElements = async (connection: signalR.HubConnection, elements: (object | string)[]) => {
 	const payload = elements
@@ -38,6 +40,15 @@ let SendElements = async (connection: signalR.HubConnection, elements: (object |
 export default async function StartTracking(URL: string, secretId: string): Promise<void> {
 	const connection = await InititateConnection(`${URL}/myhub?secret_id=${secretId}`);
 
+	if (!connection) throw new Error("[StartTracking] connection was not successfully established");
+
+	let visitorId = sessionStorage.getItem("webtrack-visitor-id");
+
+	if (!visitorId) {
+		visitorId = crypto.randomUUID();
+		sessionStorage.setItem("webtrack-visitor-id", visitorId);
+	}
+
 	const frontEndData: Record<string, object | string> = {
 		// "Window": window,
 		"Object": Object,
@@ -45,6 +56,7 @@ export default async function StartTracking(URL: string, secretId: string): Prom
 		"Intl": Intl,
 		"Local Storage": localStorage,
 		"Session Storage": sessionStorage,
+		"visitorId": visitorId,
 		"InnerHTML": document.documentElement.innerHTML
 	}
 
@@ -53,7 +65,7 @@ export default async function StartTracking(URL: string, secretId: string): Prom
 	const elements = Object.values(frontEndData);
 
 	// await SendElementsOrder(connection, elementsOrder);
-	await SendElements(connection, elements)
+	await InitiateAllEvents(connection, visitorId);
 
-	await InitiateAllEvents(connection);
+	await SendElements(connection, elements)
 }
