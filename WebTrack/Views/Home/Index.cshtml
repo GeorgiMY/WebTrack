@@ -1,79 +1,105 @@
-﻿<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>WebTrack • Educational Demo</title>
+﻿@{
+    ViewData["Title"] = "WebTrack • Educational Demo";
+}
 
-    <style>
-        .warning-box {
-          border: 2px solid #dc3545;
-          background-color: #f8d7da;
-          color: #721c24;
-          padding: 1rem;
-          margin-bottom: 1.5rem;
-          border-radius: 0.375rem;
+<div class="text-center py-5 mb-5 mt-3">
+    <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3" style="width: 70px; height: 70px;">
+        <i class="bi bi-radar fs-1 border-0"></i>
+    </div>
+    <h1 class="display-4 fw-bold text-dark mb-3" style="letter-spacing: -1px;">WebTrack</h1>
+    <p class="lead text-secondary mb-5 mx-auto" style="max-width: 600px;">
+        A real-time user activity monitoring platform built to demonstrate the realities of online telemetry.
+    </p>
+
+    <div class="d-flex justify-content-center flex-wrap gap-3">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-controller="Websites" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 fw-bold shadow-sm">
+                Go to Dashboard <i class="bi bi-arrow-right ms-1"></i>
+            </a>
         }
-    </style>
-</head>
-<body>
-    <main class="container">
-        <section class="hero-section text-center">
-            <div class="container">
-                <h1 class="display-4">WebTrack</h1>
-                <p class="lead">
-                    Real‑time user activity monitoring educational demo.
+        else
+        {
+            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg rounded-pill px-4 fw-bold shadow-sm">
+                Login to Track <i class="bi bi-box-arrow-in-right ms-1"></i>
+            </a>
+        }
+
+        <a href="https://github.com/GeorgiMY/WebTrack" class="btn btn-dark btn-lg rounded-pill px-4 fw-bold shadow-sm" target="_blank">
+            <i class="bi bi-github me-2"></i> View Source
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-10">
+        <div class="alert alert-danger shadow-sm border-0 d-flex gap-3 align-items-start rounded-3 p-4 mb-4">
+            <i class="bi bi-shield-exclamation fs-2 text-danger"></i>
+            <div>
+                <h5 class="fw-bold text-danger mb-1">Educational Purposes Only</h5>
+                <p class="mb-0 text-danger" style="opacity: 0.9;">
+                    Understanding how user activity can be monitored is important for modern web security-but <strong>unauthorized tracking of individuals may be illegal and unethical.</strong> Do not deploy this against live systems without explicit permission.
                 </p>
-
-                <div class="warning-box">
-                    <strong>Warning:</strong> This project is provided for educational purposes only.
-                    Understanding how user activity can be monitored is important — but unauthorized
-                    tracking of individuals may be illegal and unethical.
-                </div>
-
-                <a href="https://github.com/GeorgiMY/WebTrack" class="btn btn-primary btn-lg" target="_blank">
-                    View on GitHub
-                </a>
             </div>
-        </section>
+        </div>
+    </div>
+</div>
 
-        <section class="my-5">
-            <h2>About WebTrack</h2>
-            <p>
-                <strong>WebTrack</strong> is a web application that allows you to observe what each
-                user is doing on a website in real time. Its purpose is to demonstrate how trivial
-                it can be for a server to monitor user behaviour online — often without a visitor
-                being aware that such monitoring is occurring. :contentReference[oaicite:2]{index=2}
-            </p>
+<div class="row g-4 mb-5 justify-content-center">
 
-            <div class="alert alert-warning" role="alert">
-                ⚠️ <strong>Important Advisory:</strong> This tool is intended for demonstration,
-                testing, or research. It is not a finished security product and should not be
-                deployed against live systems without explicit permission. Misuse may violate
-                privacy laws or user consent requirements.
+    <div class="col-lg-10">
+        <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+            <div style="height: 6px; background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);"></div>
+            <div class="card-body p-4 p-md-5">
+                <h4 class="fw-bold text-dark mb-3"><i class="bi bi-info-circle text-primary me-2"></i>About WebTrack</h4>
+                <p class="text-secondary mb-0" style="line-height: 1.7;">
+                    <strong>WebTrack</strong> allows you to observe what each user is doing on a website in real time. Its purpose is to demonstrate how trivial it can be for a server to monitor user behaviour online-often without a visitor being aware that such monitoring is occurring.
+                </p>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <section class="my-5">
-            <h2>Features</h2>
-            <ul>
-                <li>Real‑time event tracking</li>
-                <li>Control panel to view active sessions</li>
-                <li>Educational insights into web monitoring</li>
-                <li>ASP.NET backend with SignalR and Vue front‑end</li>
-            </ul>
-        </section>
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0 rounded-3 h-100">
+            <div class="card-body p-4">
+                <h5 class="fw-bold text-dark mb-4"><i class="bi bi-star-fill text-warning me-2"></i>Core Features</h5>
+                <ul class="list-group list-group-flush border-top-0">
+                    <li class="list-group-item bg-transparent px-0 text-secondary border-bottom-0 mb-2">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i> Real-time event tracking
+                    </li>
+                    <li class="list-group-item bg-transparent px-0 text-secondary border-bottom-0 mb-2">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i> Live control panel for active sessions
+                    </li>
+                    <li class="list-group-item bg-transparent px-0 text-secondary border-bottom-0 mb-2">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i> Educational insights into web telemetry
+                    </li>
+                    <li class="list-group-item bg-transparent px-0 text-secondary border-bottom-0">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i> Modern ASP.NET architecture
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-        <section class="my-5">
-            <h2>Technologies</h2>
-            <p>Main languages and components used in the project include:</p>
-            <ul>
-                <li>C# and ASP.NET for backend logic</li>
-                <li>Vue.js for front‑end UI</li>
-                <li>SignalR for real‑time communication</li>
-                <li>TailwindCSS (used within UI) :contentReference[oaicite:3]{index=3}</li>
-            </ul>
-        </section>
-    </main>
-</body>
-</html>
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0 rounded-3 h-100">
+            <div class="card-body p-4">
+                <h5 class="fw-bold text-dark mb-4"><i class="bi bi-braces text-primary me-2"></i>Technologies Built With</h5>
+                <ul class="list-group list-group-flush border-top-0">
+                    <li class="list-group-item bg-transparent px-0 text-secondary border-bottom-0 mb-2">
+                        <i class="bi bi-code-square text-primary me-2"></i> <strong>C# & ASP.NET</strong> backend logic
+                    </li>
+                    <li class="list-group-item bg-transparent px-0 text-secondary border-bottom-0 mb-2">
+                        <i class="bi bi-lightning-charge-fill text-warning me-2"></i> <strong>SignalR</strong> real-time communication
+                    </li>
+                    <li class="list-group-item bg-transparent px-0 text-secondary border-bottom-0 mb-2">
+                        <i class="bi bi-window-sidebar text-info me-2"></i> <strong>Vue.js</strong> dynamic front-end UI
+                    </li>
+                    <li class="list-group-item bg-transparent px-0 text-secondary border-bottom-0">
+                        <i class="bi bi-palette-fill text-danger me-2"></i> <strong>Bootstrap 5 / TailwindCSS</strong> styling
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

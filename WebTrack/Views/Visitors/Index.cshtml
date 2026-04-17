@@ -1,41 +1,57 @@
 ﻿@using WebTrack.Core.DTOs.Visitors
 @using WebTrack.Data.Entities
-
 @model IEnumerable<VisitorListItemDto>
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-</head>
-<body>
-    <table class="table">
-        <thead>
-            <tr>
-                <td>Websites</td>
-                <td>Sessions</td>
-            </tr>
-        </thead>
+@{
+    ViewData["Title"] = "Visitors";
+}
 
-        <tbody>
-            @foreach (VisitorListItemDto visitor in Model)
-            {
+<div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">Visitors</h2>
+        <p class="text-muted mb-0">Track unique visitors across your websites.</p>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+    <div style="height: 6px; background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);"></div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light text-muted small text-uppercase" style="letter-spacing: 0.5px;">
                 <tr>
-                    <td>
-                        @foreach (Website website in visitor.Websites)
-                        {
-                            <p>@website.Name - @website.BaseUrl</p>
-                        }
-                    </td>
-                    <td>
-                        @foreach (Session session in visitor.Sessions)
-                        {
-                            <p>@session.Referrer - @session.LandingPagePath</p>
-                        }
-                    </td>
+                    <th class="py-3 ps-4 border-bottom-0">Visited Websites</th>
+                    <th class="py-3 border-bottom-0">Session History</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</body>
-</html>
+            </thead>
+            <tbody class="border-top-0">
+                @foreach (VisitorListItemDto visitor in Model)
+                {
+                    <tr>
+                        <td class="ps-4 py-3">
+                            <div class="d-flex flex-column gap-1">
+                                @foreach (Website website in visitor.Websites)
+                                {
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill text-start w-auto" style="width: fit-content;">
+                                        <i class="bi bi-window-sidebar me-1"></i> @website.Name <span class="text-muted fw-normal ms-1">(@website.BaseUrl)</span>
+                                    </span>
+                                }
+                            </div>
+                        </td>
+                        <td class="py-3">
+                            <ul class="list-unstyled mb-0 small">
+                                @foreach (Session session in visitor.Sessions)
+                                {
+                                    <li class="mb-1 text-secondary">
+                                        <i class="bi bi-box-arrow-in-right text-success me-1"></i> <strong>@session.LandingPagePath</strong>
+                                        <span class="text-muted fst-italic">(via @(string.IsNullOrEmpty(session.Referrer) ? "Direct" : session.Referrer))</span>
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

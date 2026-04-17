@@ -1,10 +1,33 @@
-﻿<!DOCTYPE html>
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-</head>
-<body>
-    <a asp-controller="Admin" asp-action="Users">View all users</a>
-</body>
-</html>
+<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+
+        <div class="card shadow-sm border-0 rounded-3 text-center position-relative overflow-hidden">
+            <div style="height: 6px; background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); position: absolute; top: 0; left: 0; right: 0;"></div>
+
+            <div class="card-body p-5">
+                <div class="mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-danger bg-opacity-10 rounded-circle mb-3" style="width: 80px; height: 80px; color: #dc3545;">
+                        <i class="bi bi-shield-lock-fill fs-1"></i>
+                    </div>
+                    <h2 class="fw-bold text-dark">Admin Control Panel</h2>
+                    <p class="text-muted small px-3">
+                        Welcome to the WebTrack administration dashboard. Oversee platform activity, manage registered accounts, and enforce system security policies.
+                    </p>
+                </div>
+
+                <a asp-controller="Admin" asp-action="Users" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm w-100 mb-3 py-2">
+                    <i class="bi bi-people-fill me-2"></i> Manage All Users
+                </a>
+
+                <a asp-controller="Websites" asp-action="Index" class="btn btn-light border text-secondary rounded-pill fw-semibold w-100 py-2 custom-hover">
+                    <i class="bi bi-arrow-left me-2"></i> Return to Tracker
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>

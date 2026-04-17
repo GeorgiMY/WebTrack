@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using WebTrack.Core.Contracts;
 using WebTrack.Data.Entities;
 
@@ -12,9 +13,9 @@ namespace WebTrack.Core.Services
         {
             _userManager = userManager;
         }
-        public List<User> GetAllVisitors()
+        public async Task<List<User>> GetAllVisitors()
         {
-            List<User> users = _userManager.Users.ToList();
+            List<User> users = await _userManager.Users.Include(u => u.Websites).ToListAsync();
             return users;
         }
     }

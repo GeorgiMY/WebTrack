@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebTrack.Core.Contracts;
 using WebTrack.Core.DTOs.Sessions;
@@ -6,6 +7,7 @@ using WebTrack.Data.Entities;
 
 namespace WebTrack.Controllers
 {
+    [Authorize]
     public class SessionsController : Controller
     {
         ISessionsService _sessionsService;

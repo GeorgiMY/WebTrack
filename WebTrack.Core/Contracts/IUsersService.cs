@@ -4,6 +4,6 @@ namespace WebTrack.Core.Contracts
 {
     public interface IUsersService
     {
-        List<User> GetAllVisitors();
+        Task<List<User>> GetAllVisitors();
     }
 }

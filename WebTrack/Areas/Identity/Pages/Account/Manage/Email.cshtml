@@ -1,0 +1,50 @@
+﻿@page
+@model EmailModel
+@{
+    ViewData["Title"] = "Manage Email";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<h3 class="fw-bold mb-4 text-dark">@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="row">
+    <div class="col-md-8 col-lg-7">
+        <form id="email-form" method="post">
+            <div asp-validation-summary="All" class="text-danger small fw-semibold mb-3" role="alert"></div>
+
+            @if (Model.IsEmailConfirmed)
+            {
+                <div class="form-floating mb-4 position-relative">
+                    <input asp-for="Email" class="form-control bg-light" disabled />
+                    <label asp-for="Email" class="text-secondary"><i class="bi bi-envelope-check me-1"></i> Current Email</label>
+                    <i class="bi bi-check-circle-fill text-success position-absolute" style="top: 18px; right: 15px; font-size: 1.2rem;"></i>
+                </div>
+            }
+            else
+            {
+                <div class="form-floating mb-2">
+                    <input asp-for="Email" class="form-control bg-light" disabled />
+                    <label asp-for="Email" class="text-secondary"><i class="bi bi-envelope-exclamation me-1"></i> Current Email (Unverified)</label>
+                </div>
+                <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-outline-secondary btn-sm rounded-pill mb-4 shadow-sm">
+                    <i class="bi bi-send me-1"></i> Send verification email
+                </button>
+            }
+
+            <div class="form-floating mb-4 mt-2">
+                <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" aria-required="true" placeholder="Please enter new email." />
+                <label asp-for="Input.NewEmail" class="text-secondary"><i class="bi bi-envelope-plus me-1"></i> New Email Address</label>
+                <span asp-validation-for="Input.NewEmail" class="text-danger small fw-semibold mt-1 d-block"></span>
+            </div>
+
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+                Update Email <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

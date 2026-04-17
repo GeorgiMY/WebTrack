@@ -1,55 +1,134 @@
 ﻿@using WebTrack.Data.Entities
-
 @model IEnumerable<User>
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-</head>
-<body>
-    <table class="table">
-        <thead>
-            <tr>
-                <td>Id</td>
-                <td>Email</td>
-                <td>PhoneNumber</td>
-                <td>UserName</td>
-                <td>Websites</td>
-                <td>AccessFailedCount</td>
-                <td>ConcurrencyStamp</td>
-                <td>EmailConfirmed</td>
-                <td>LockoutEnabled</td>
-                <td>LockoutEnd</td>
-                <td>PhoneNumberConfirmed</td>
-                <td>TwoFactorEnabled</td>
-            </tr>
-        </thead>
+@{
+    ViewData["Title"] = "User Management";
+}
 
-        <tbody>
-            @foreach (User user in Model)
-            {
+<div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">User Management</h2>
+        <p class="text-muted mb-0">Admin view of all registered system users.</p>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 rounded-3 overflow-hidden mb-5">
+    <div style="height: 6px; background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);"></div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 text-nowrap" style="border-collapse: collapse;">
+            <thead class="bg-light text-muted small text-uppercase" style="letter-spacing: 0.5px;">
                 <tr>
-                    <td>@user.Id</td>
-                    <td>@user.Email</td>
-                    <td>@user.PhoneNumber</td>
-                    <td>@user.UserName</td>
-                    <td>
-                        @foreach (Website website in user.Websites)
-                        {
-                            <p>@website.Name - @website.BaseUrl</p>
-                        }
-                    </td>
-                    <td>@user.AccessFailedCount</td>
-                    <td>@user.ConcurrencyStamp</td>
-                    <td>@user.EmailConfirmed</td>
-                    <td>@user.LockoutEnabled</td>
-                    <td>@user.LockoutEnd</td>
-                    <td>@user.PhoneNumberConfirmed</td>
-                    <td>@user.TwoFactorEnabled</td>
+                    <th class="py-3 ps-4">User Info</th>
+                    <th class="py-3">Assigned Websites</th>
+                    <th class="py-3">Security & Status</th>
+                    <th class="py-3">Lockout Data</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</body>
-</html>
+            </thead>
+            <tbody>
+                @foreach (User user in Model)
+                {
+                    <tr>
+                        <td class="ps-4 py-3">
+                            <div class="fw-bold text-dark">@user.Email</div>
+                            <div class="small text-muted font-monospace">ID: @user.Id</div>
+                            @if (!string.IsNullOrEmpty(user.PhoneNumber))
+                            {
+                                <div class="small text-secondary"><i class="bi bi-telephone"></i> @user.PhoneNumber</div>
+                            }
+                        </td>
+
+                        <td class="py-3">
+                            @if (user.Websites.Any())
+                            {
+                                <button class="btn btn-sm btn-primary rounded-pill shadow-sm px-3 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#sites-@user.Id" aria-expanded="false" aria-controls="sites-@user.Id">
+                                    @user.Websites.Count() Sites <i class="bi bi-chevron-down ms-1"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-secondary border rounded-pill">None</span>
+                            }
+                        </td>
+
+                        <td class="py-3">
+                            <div class="d-flex gap-1 mb-1">
+                                @if (user.EmailConfirmed)
+                                {
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle"><i class="bi bi-check-circle"></i> Email</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle">No Email</span>
+                                }
+
+                                @if (user.PhoneNumberConfirmed)
+                                {
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle"><i class="bi bi-check-circle"></i> Phone</span>
+                                }
+                            </div>
+                            <div>
+                                @if (user.TwoFactorEnabled)
+                                {
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle"><i class="bi bi-shield-lock"></i> 2FA Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-secondary border"><i class="bi bi-shield-slash"></i> 2FA Off</span>
+                                }
+                            </div>
+                        </td>
+
+                        <td class="py-3 small">
+                            <div class="text-muted">Fails: <strong class="@(user.AccessFailedCount > 0 ? "text-danger" : "text-dark")">@user.AccessFailedCount</strong></div>
+
+                            @if (user.LockoutEnabled)
+                            {
+                                <div class="text-warning"><i class="bi bi-lock-fill"></i> Lockout Enabled</div>
+                            }
+                            @if (user.LockoutEnd.HasValue && user.LockoutEnd > DateTimeOffset.UtcNow)
+                            {
+                                <div class="text-danger fw-bold"><i class="bi bi-x-circle"></i> Locked until @user.LockoutEnd.Value.ToString("g")</div>
+                            }
+                        </td>
+                    </tr>
+
+                    @if (user.Websites.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="p-0 border-0">
+                                <div class="collapse" id="sites-@user.Id">
+                                    <div class="p-4 bg-light border-bottom" style="box-shadow: inset 0 4px 6px -6px rgba(0,0,0,0.1);">
+
+                                        <h6 class="fw-bold text-secondary mb-3 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                            Websites Assigned to @user.Email
+                                        </h6>
+
+                                        <div class="list-group shadow-sm border-0 rounded-3" style="max-width: 600px;">
+                                            @foreach (var website in user.Websites)
+                                            {
+                                                <a asp-controller="Websites" asp-action="Details" asp-route-id="@website.Id" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3 border-0 border-bottom">
+                                                    <div>
+                                                        <div class="fw-bold text-dark mb-1">
+                                                            <i class="bi bi-window-sidebar text-primary me-2"></i>@website.Name
+                                                        </div>
+                                                        <div class="small text-muted font-monospace">@website.BaseUrl</div>
+                                                    </div>
+
+                                                    <div class="text-muted">
+                                                        <span class="small fw-semibold me-1">View Live</span> <i class="bi bi-arrow-right-short fs-5"></i>
+                                                    </div>
+                                                </a>
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

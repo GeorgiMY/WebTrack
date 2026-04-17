@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using WebTrack.Core.Contracts;
 using WebTrack.Core.DTOs.Websites;
 using WebTrack.Data;
@@ -41,7 +40,6 @@ namespace WebTrack.Controllers
                 websiteDtos = await _websitesService.GetAllUserWebsites(currentUserId);
             }
             List<string> websiteIds = websiteDtos.Select(website => website.Id.ToString()).ToList();
-            Console.WriteLine(websiteIds);
 
             return View(websiteDtos);
         }
@@ -59,8 +57,8 @@ namespace WebTrack.Controllers
             // Checks
             //----------------------------------------------------------
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            Website? website = _context.Websites.Where(website => website.BaseUrl == websiteCreateDto.BaseUrl).FirstOrDefault();
+            
+            Website? website = await _context.Websites.Where(website => website.BaseUrl == websiteCreateDto.BaseUrl).FirstOrDefaultAsync();
             if (website != null) return View(websiteCreateDto);
 
             User? currentUser = await _userManager.GetUserAsync(User);
@@ -82,7 +80,7 @@ namespace WebTrack.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("/Websites/{id:guid}")]
         public async Task<IActionResult> Details(Guid id)
         {
             Website? website = await _context.Websites.FindAsync(id);

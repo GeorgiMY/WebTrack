@@ -1,40 +1,56 @@
 ﻿@using WebTrack.Core.DTOs.Sessions
-
 @model IEnumerable<SessionListItemDto>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head><title></title></head>
-    <body>
-        <table class="table">
-            <thead>
+@{
+    ViewData["Title"] = "Sessions";
+}
+
+<div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">Sessions</h2>
+        <p class="text-muted mb-0">Real-time breakdown of user interactions.</p>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+    <div style="height: 6px; background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);"></div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 text-nowrap">
+            <thead class="bg-light text-muted small text-uppercase" style="letter-spacing: 0.5px;">
                 <tr>
-                    <td>LandingPagePath</td>
-                    <td>Referrer</td>
-                    <td>Browser</td>
-                    <td>DeviceType</td>
-                    <td>StartedAtUtc</td>
-                    <td>EndedAtUtc</td>
-                    <td>Os</td>
-                    <td>VisitorId</td>
-                    <td>WebsiteId</td>
+                    <th class="py-3 ps-4">Landing Page</th>
+                    <th class="py-3">Referrer</th>
+                    <th class="py-3">System</th>
+                    <th class="py-3">Duration</th>
+                    <th class="py-3">IDs</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (SessionListItemDto session in Model)
                 {
                     <tr>
-                        <td>@session.LandingPagePath</td>
-                        <td>@session.Referrer</td>
-                        <td>@session.Browser</td>
-                        <td>@session.DeviceType</td>
-                        <td>@session.StartedAtUtc</td>
-                        <td>@session.EndedAtUtc</td>
-                        <td>@session.Os</td>
-                        <td>@session.VisitorId</td>
-                        <td>@session.WebsiteId</td>
+                        <td class="ps-4 py-3 fw-semibold text-dark">
+                            <i class="bi bi-file-earmark-text text-secondary me-1"></i> @session.LandingPagePath
+                        </td>
+                        <td class="py-3 text-muted">
+                            @(string.IsNullOrEmpty(session.Referrer) ? "Direct Traffic" : session.Referrer)
+                        </td>
+                        <td class="py-3 small">
+                            <div><i class="bi bi-globe me-1 text-primary"></i> @session.Browser</div>
+                            <div><i class="bi bi-laptop me-1 text-secondary"></i> @session.Os / @session.DeviceType</div>
+                        </td>
+                        <td class="py-3 small text-muted">
+                            <div><i class="bi bi-clock me-1"></i> Start: @session.StartedAtUtc.ToString("g")</div>
+                            <div><i class="bi bi-stopwatch me-1"></i> End: @(session.EndedAtUtc?.ToString("g") ?? "Active")</div>
+                        </td>
+                        <td class="py-3 small font-monospace text-secondary" style="font-size: 0.8rem;">
+                            <div>V: @session.VisitorId.ToString().Substring(0, 8)...</div>
+                            <div>W: @session.WebsiteId.ToString().Substring(0, 8)...</div>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
-    </body>
-</html>
+    </div>
+</div>

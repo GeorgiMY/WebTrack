@@ -1,22 +1,66 @@
 ﻿@using WebTrack.Data.Entities
 @model Website
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <link rel="stylesheet" href="~/css/websites.css" asp-append-version="true" />
-    <title>Tracking</title>
-</head>
-<body>
-    <h1>@Model.Name</h1>
-    <p>Secret - @Model.WsSecret</p>
+@{
+    ViewData["Title"] = $"{Model.Name} - Live Tracking";
+}
 
-    @section Scripts {
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
-        <script src="~/js/websites.js" asp-append-version="true"></script>
-        <script type="text/javascript">initializeTracking("@Model.WsSecret")</script>
-    }
-</body>
-</html>
+<div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+    <div>
+        <a asp-controller="Websites" asp-action="Index" class="text-decoration-none text-secondary mb-2 d-inline-block" style="font-size: 0.9rem; transition: color 0.2s;">
+            <i class="bi bi-arrow-left me-1"></i> Back to Websites
+        </a>
 
+        <h2 class="fw-bold text-dark mb-1">
+            <i class="bi bi-broadcast text-primary me-2"></i>@Model.Name
+        </h2>
+        <p class="text-muted mb-0">Real-time visitor tracking dashboard.</p>
+    </div>
 
+    <div class="badge bg-danger bg-opacity-10 border border-danger text-danger rounded-pill px-3 py-2 d-flex align-items-center gap-2 shadow-sm mb-1" style="font-size: 0.9rem;">
+        Tracking Live
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+            <div style="height: 4px; background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);"></div>
+            <div class="card-body p-4">
+                <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.8rem; letter-spacing: 0.5px;">Integration Details</h6>
+
+                <label class="form-label text-muted small fw-semibold">Tracking Secret (WsSecret)</label>
+                <div class="input-group mb-2 shadow-sm rounded-3">
+                    <span class="input-group-text bg-light border-end-0 text-muted">
+                        <i class="bi bi-key-fill"></i>
+                    </span>
+                    <input type="password" id="wsSecretInput" class="form-control bg-light border-start-0 border-end-0 font-monospace text-secondary" value="@Model.WsSecret" readonly>
+                    <button class="btn btn-light border" type="button" id="toggleSecretBtn">
+                        <i class="bi bi-eye" id="toggleSecretIcon"></i>
+                    </button>
+                </div>
+                <div class="small text-muted">
+                    <i class="bi bi-info-circle me-1"></i> Keep this key secure. Do not expose it in public repositories.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3 d-flex justify-content-between align-items-center">
+    <h5 class="fw-bold text-dark mb-0"><i class="bi bi-people-fill me-2"></i>Active Sessions</h5>
+    <span class="text-muted small">Listening for incoming connections...</span>
+</div>
+
+<div id="live-visitors-container" class="row g-4 pb-5">
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
+    <script src="~/js/websites.js" asp-append-version="true"></script>
+
+    <script type="text/javascript">
+        // Start your SignalR connection
+        initializeTracking("@Model.WsSecret");
+    </script>
+}

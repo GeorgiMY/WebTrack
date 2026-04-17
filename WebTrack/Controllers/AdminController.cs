@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebTrack.Core.Contracts;
-using WebTrack.Core.Services;
 using WebTrack.Data.Entities;
 
 namespace WebTrack.Controllers
@@ -21,7 +19,7 @@ namespace WebTrack.Controllers
 
         public async Task<IActionResult> Users()
         {
-            List<User> users = _usersService.GetAllVisitors();
+            List<User> users = await _usersService.GetAllVisitors();
             return View(users);
         }
     }

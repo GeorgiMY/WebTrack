@@ -46,3 +46,19 @@
         }
     });
 }
+
+// Toggle Secret Eye Logic
+document.getElementById('toggleSecretBtn').addEventListener('click', function () {
+    const secretInput = document.getElementById('wsSecretInput');
+    const icon = document.getElementById('toggleSecretIcon');
+
+    if (secretInput.type === 'password') {
+        secretInput.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        secretInput.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+});

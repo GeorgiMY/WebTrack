@@ -1176,7 +1176,7 @@
             },
             "Microsoft.AspNetCore.Identity.UI": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.23, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -1194,7 +1194,7 @@
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.23, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
@@ -1208,7 +1208,7 @@
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.23, )"
             }
           },
           "imports": [

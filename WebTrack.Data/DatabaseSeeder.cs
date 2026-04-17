@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using WebTrack.Data.Entities;
 
 namespace WebTrack.Data
@@ -56,7 +57,7 @@ namespace WebTrack.Data
             string testWebsiteBaseURL = "http://localhost:5173";
             string testWebsiteWsSecret = "TestWsSecret";
 
-            if (context.Websites.Select(website => website.BaseUrl == testWebsiteBaseURL).FirstOrDefault()) return;
+            if (await context.Websites.Select(website => website.BaseUrl == testWebsiteBaseURL).FirstOrDefaultAsync()) return;
 
             Website website = new Website
             {
@@ -65,7 +66,7 @@ namespace WebTrack.Data
                 WsSecret = testWebsiteWsSecret
             };
 
-            User? admin = userManager.Users.Where(user => user.Email == "testuseremail@epic.email").FirstOrDefault()
+            User? admin = await userManager.Users.Where(user => user.Email == "testuseremail@epic.email").FirstOrDefaultAsync()
                 ?? throw new Exception("[DatabaseSeeder.cs] ADMIN CAN'T BE FOUND");
 
             website.Users.Add(admin);
