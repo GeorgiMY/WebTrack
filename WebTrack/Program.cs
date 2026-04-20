@@ -33,10 +33,10 @@ builder.Services.AddScoped<IUsersService, UsersService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ViteClient", policy =>
+    options.AddPolicy("Clients", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173")
+            .SetIsOriginAllowed(origin => true)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -68,7 +68,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseCors("ViteClient");
+app.UseCors("Clients");
 
 app.UseAuthentication();
 app.UseAuthorization();
