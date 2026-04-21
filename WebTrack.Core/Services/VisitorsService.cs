@@ -2,7 +2,6 @@
 using WebTrack.Core.Contracts;
 using WebTrack.Core.DTOs.Visitors;
 using WebTrack.Data;
-using WebTrack.Data.Entities;
 
 namespace WebTrack.Core.Services
 {

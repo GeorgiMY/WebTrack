@@ -9,12 +9,10 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-global using WebTrack;
 global using WebTrack.Controllers;
 global using WebTrack.Hubs;
 
 global using WebTrack.Core.Contracts;
-global using WebTrack.Core.DTOs;
 global using WebTrack.Core.Services;
 
 global using WebTrack.Data;

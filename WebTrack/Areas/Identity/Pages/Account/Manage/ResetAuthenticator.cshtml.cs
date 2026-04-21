@@ -5,9 +5,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
 using WebTrack.Data.Entities;
 
 namespace WebTrack.Areas.Identity.Pages.Account.Manage

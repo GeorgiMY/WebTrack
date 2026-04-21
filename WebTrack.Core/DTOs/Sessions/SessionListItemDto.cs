@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebTrack.Data.Entities;
-
-namespace WebTrack.Core.DTOs.Sessions
+﻿namespace WebTrack.Core.DTOs.Sessions
 {
     public class SessionListItemDto
     {

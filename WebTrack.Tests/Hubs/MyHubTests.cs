@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
-namespace WebTrack.Tests;
+namespace WebTrack.Tests.Hubs;
 
 public class MyHubTests
 {

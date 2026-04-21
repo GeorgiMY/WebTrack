@@ -1,6 +1,6 @@
 ﻿using WebTrack.Core.DTOs.Visitors;
 
-namespace WebTrack.Tests;
+namespace WebTrack.Tests.Services;
 
 public class VisitorsServiceTests
 {

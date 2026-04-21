@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using WebTrack.Tests.TestUtilities;
+﻿using WebTrack.Tests.TestUtilities;
 
-namespace WebTrack.Tests;
+namespace WebTrack.Tests.Data;
 
 public class DatabaseSeederTests
 {

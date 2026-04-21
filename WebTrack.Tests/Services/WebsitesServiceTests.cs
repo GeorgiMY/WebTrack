@@ -1,6 +1,6 @@
 ﻿using WebTrack.Core.DTOs.Websites;
 
-namespace WebTrack.Tests;
+namespace WebTrack.Tests.Services;
 
 public class WebsitesServiceTests
 {

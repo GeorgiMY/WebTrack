@@ -2,7 +2,7 @@
 using WebTrack.Core.DTOs.Sessions;
 using WebTrack.Tests.TestUtilities;
 
-namespace WebTrack.Tests;
+namespace WebTrack.Tests.Controllers;
 
 public class SessionsControllerTests
 {
