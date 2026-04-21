@@ -50,13 +50,13 @@ export default async function StartTracking(URL: string, secretId: string): Prom
 	}
 
 	const frontEndData: Record<string, object | string> = {
-		// "Window": window,
 		"Object": Object,
 		"Performance": performance,
 		"Intl": Intl,
 		"Local Storage": localStorage,
 		"Session Storage": sessionStorage,
 		"visitorId": visitorId,
+		"navigator": navigator,
 		"InnerHTML": document.documentElement.innerHTML
 	}
 

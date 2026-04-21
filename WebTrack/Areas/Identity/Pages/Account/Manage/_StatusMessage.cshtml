@@ -2,9 +2,9 @@
 
 @if (!String.IsNullOrEmpty(Model))
 {
-    var isError = Model.StartsWith("Error");
-    var alertClass = isError ? "alert-danger" : "alert-success";
-    var iconClass = isError ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill";
+    bool isError = Model.StartsWith("Error");
+    string? alertClass = isError ? "alert-danger" : "alert-success";
+    string? iconClass = isError ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill";
 
     <div class="alert @alertClass alert-dismissible fade show shadow-sm border-0 d-flex align-items-center gap-2" role="alert" style="border-radius: 8px;">
         <i class="bi @iconClass fs-5"></i>

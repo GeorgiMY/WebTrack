@@ -13,8 +13,8 @@ namespace WebTrack.Hubs
 
         public async Task ReceiveFromJs(string message)
         {
-            var httpContext = Context.GetHttpContext();
-            var secretId = httpContext?.Request.Query["secret_id"].ToString();
+            HttpContext? httpContext = Context.GetHttpContext();
+            string? secretId = httpContext?.Request.Query["secret_id"].ToString();
 
             if (!string.IsNullOrEmpty(secretId))
             {
