@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "3hSCxzBbKOc=",
+  "dgSpecHash": "ipVSPH9iVwA=",
   "success": true,
   "projectFilePath": "D:\\Projects\\WebTrack\\WebTrack.Tests\\WebTrack.Tests.csproj",
   "expectedPackageFiles": [
@@ -89,6 +89,7 @@
     "C:\\Users\\georg\\.nuget\\packages\\microsoft.entityframeworkcore\\8.0.26\\microsoft.entityframeworkcore.8.0.26.nupkg.sha512",
     "C:\\Users\\georg\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\8.0.26\\microsoft.entityframeworkcore.abstractions.8.0.26.nupkg.sha512",
     "C:\\Users\\georg\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\8.0.26\\microsoft.entityframeworkcore.analyzers.8.0.26.nupkg.sha512",
+    "C:\\Users\\georg\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\8.0.4\\microsoft.entityframeworkcore.inmemory.8.0.4.nupkg.sha512",
     "C:\\Users\\georg\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\8.0.26\\microsoft.entityframeworkcore.relational.8.0.26.nupkg.sha512",
     "C:\\Users\\georg\\.nuget\\packages\\microsoft.entityframeworkcore.sqlite\\8.0.23\\microsoft.entityframeworkcore.sqlite.8.0.23.nupkg.sha512",
     "C:\\Users\\georg\\.nuget\\packages\\microsoft.entityframeworkcore.sqlite.core\\8.0.23\\microsoft.entityframeworkcore.sqlite.core.8.0.23.nupkg.sha512",

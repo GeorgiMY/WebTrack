@@ -10,7 +10,7 @@ namespace WebTrack.Controllers
     [Authorize]
     public class SessionsController : Controller
     {
-        ISessionsService _sessionsService;
+        private readonly ISessionsService _sessionsService;
         private readonly UserManager<User> _userManager;
 
         public SessionsController(ISessionsService sessionsService, UserManager<User> userManager)

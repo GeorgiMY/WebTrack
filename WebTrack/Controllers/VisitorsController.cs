@@ -10,7 +10,7 @@ namespace WebTrack.Controllers
     [Authorize]
     public class VisitorsController : Controller
     {
-        IVisitorsService _visitorsService;
+        private readonly IVisitorsService _visitorsService;
         private readonly UserManager<User> _userManager;
 
         public VisitorsController(IVisitorsService visitorsService, UserManager<User> userManager)
