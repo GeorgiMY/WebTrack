@@ -3,7 +3,7 @@ import { StringifyEventInterface } from "./utils";
 
 const wsConnectionName = "ReceiveFromJs";
 const elementsOrderSeperator = "|";
-// const URL = "https://localhost:7273/myhub";
+// const URL = "https://localhost:7273";
 
 let InititateConnection = async (URL: string): Promise<signalR.HubConnection> => {
 	const connection = new signalR.HubConnectionBuilder()
@@ -37,6 +37,12 @@ let SendElements = async (connection: signalR.HubConnection, elements: (object |
 	connection.invoke(wsConnectionName, payload);
 }
 
+let SendElementsPeriodically = async (connection: signalR.HubConnection, elements: (object | string)[]) => {
+	setInterval(async () => {
+		await SendElements(connection, elements);
+	}, 1000);
+}
+
 export default async function StartTracking(URL: string, secretId: string): Promise<void> {
 	const connection = await InititateConnection(`${URL}/myhub?secret_id=${secretId}`);
 
@@ -55,8 +61,8 @@ export default async function StartTracking(URL: string, secretId: string): Prom
 		"Intl": Intl,
 		"Local Storage": localStorage,
 		"Session Storage": sessionStorage,
-		"visitorId": visitorId,
 		"navigator": navigator,
+		"visitorId": visitorId,
 		"InnerHTML": document.documentElement.innerHTML
 	}
 
@@ -66,6 +72,5 @@ export default async function StartTracking(URL: string, secretId: string): Prom
 
 	// await SendElementsOrder(connection, elementsOrder);
 	await InitiateAllEvents(connection, visitorId);
-
-	await SendElements(connection, elements)
+	await SendElementsPeriodically(connection, elements);
 }

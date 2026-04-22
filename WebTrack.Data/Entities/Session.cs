@@ -12,11 +12,11 @@
 
         public DateTime StartedAtUtc { get; set; } = DateTime.UtcNow;
         public DateTime? EndedAtUtc { get; set; }
-        
-        public string? Referrer { get; set; }
-        public string? LandingPagePath { get; set; }
-        public string? DeviceType { get; set; }
-        public string? Browser { get; set; }
-        public string? Os { get; set; }
+
+        public string Referrer { get; set; } = null!;
+        public string LandingPagePath { get; set; } = null!;
+        public string DeviceType { get; set; } = null!;
+        public string Browser { get; set; } = null!;
+        public string Os { get; set; } = null!;
     }
 }

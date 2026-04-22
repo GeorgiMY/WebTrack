@@ -6,5 +6,7 @@ namespace WebTrack.Core.Contracts
     {
         Task<List<VisitorListItemDto>> GetAllUserVisitors(string currentUserId);
         Task<List<VisitorListItemDto>> GetAllVisitors();
+        Task LogVisitorActivityAsync(string wsSecret, Guid visitorId, string connectionId, string userAgent, string url, string screenResolution);
+        Task EndSessionAsync(string connectionId);
     }
 }
