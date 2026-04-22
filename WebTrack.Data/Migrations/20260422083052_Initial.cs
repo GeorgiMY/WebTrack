@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -53,7 +54,9 @@ namespace WebTrack.Data.Migrations
                 name: "Visitors",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserAgent = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstSeenAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -190,11 +193,11 @@ namespace WebTrack.Data.Migrations
                     VisitorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Referrer = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
-                    LandingPagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeviceType = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
-                    Browser = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
-                    Os = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true)
+                    Referrer = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    LandingPagePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DeviceType = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    Browser = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Os = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -261,6 +264,28 @@ namespace WebTrack.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TrackedEvents",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SessionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EventType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TargetUrl = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
+                    ElementData = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    OccurredAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TrackedEvents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TrackedEvents_Sessions_SessionId",
+                        column: x => x.SessionId,
+                        principalTable: "Sessions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -311,6 +336,11 @@ namespace WebTrack.Data.Migrations
                 column: "WebsiteId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TrackedEvents_SessionId",
+                table: "TrackedEvents",
+                column: "SessionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserWebsite_WebsitesId",
                 table: "UserWebsite",
                 column: "WebsitesId");
@@ -346,7 +376,7 @@ namespace WebTrack.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Sessions");
+                name: "TrackedEvents");
 
             migrationBuilder.DropTable(
                 name: "UserWebsite");
@@ -356,6 +386,9 @@ namespace WebTrack.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Sessions");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

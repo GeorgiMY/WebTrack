@@ -9,6 +9,7 @@ namespace WebTrack.Data
         public DbSet<Website> Websites { get; set; }
         public DbSet<Visitor> Visitors { get; set; }
         public DbSet<Session> Sessions { get; set; }
+        public DbSet<TrackedEvent> TrackedEvents { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -71,6 +72,34 @@ namespace WebTrack.Data
                 entity.HasOne(session => session.Website).WithMany(website => website.Sessions).HasForeignKey(s => s.WebsiteId).OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(session => session.Visitor).WithMany(visitor => visitor.Sessions).HasForeignKey(s => s.VisitorId).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // TRACKED EVENT
+            builder.Entity<TrackedEvent>(entity =>
+            {
+                entity.HasKey(trackedEvent => trackedEvent.Id);
+
+                entity.Property(trackedEvent => trackedEvent.SessionId)
+                      .IsRequired();
+
+                entity.Property(trackedEvent => trackedEvent.EventType)
+                      .IsRequired()
+                      .HasMaxLength(50);
+
+                entity.Property(trackedEvent => trackedEvent.TargetUrl)
+                      .IsRequired()
+                      .HasMaxLength(2048);
+
+                entity.Property(trackedEvent => trackedEvent.ElementData)
+                      .HasMaxLength(1000);
+
+                entity.Property(trackedEvent => trackedEvent.OccurredAt)
+                      .IsRequired();
+
+                entity.HasOne(trackedEvent => trackedEvent.Session)
+                      .WithMany(session => session.TrackedEvents)
+                      .HasForeignKey(trackedEvent => trackedEvent.SessionId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

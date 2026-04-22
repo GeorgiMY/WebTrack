@@ -30,6 +30,7 @@ builder.Services.AddScoped<IWebsitesService, WebsitesService>();
 builder.Services.AddScoped<IVisitorsService, VisitorsService>();
 builder.Services.AddScoped<ISessionsService, SessionsService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<ITrackedEventsService, TrackedEventsService>();
 
 builder.Services.AddCors(options =>
 {

@@ -12,7 +12,7 @@ using WebTrack.Data;
 namespace WebTrack.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260415115311_Initial")]
+    [Migration("20260422083052_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace WebTrack.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.25")
+                .HasAnnotation("ProductVersion", "8.0.26")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -199,10 +199,12 @@ namespace WebTrack.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Browser")
+                        .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("DeviceType")
+                        .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
@@ -210,13 +212,16 @@ namespace WebTrack.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LandingPagePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Os")
+                        .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Referrer")
+                        .IsRequired()
                         .HasMaxLength(512)
                         .HasColumnType("nvarchar(512)");
 
@@ -236,6 +241,40 @@ namespace WebTrack.Data.Migrations
                     b.HasIndex("WebsiteId");
 
                     b.ToTable("Sessions");
+                });
+
+            modelBuilder.Entity("WebTrack.Data.Entities.TrackedEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ElementData")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("OccurredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("SessionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TargetUrl")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SessionId");
+
+                    b.ToTable("TrackedEvents");
                 });
 
             modelBuilder.Entity("WebTrack.Data.Entities.User", b =>
@@ -308,6 +347,13 @@ namespace WebTrack.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("FirstSeenAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserAgent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -443,6 +489,22 @@ namespace WebTrack.Data.Migrations
                     b.Navigation("Visitor");
 
                     b.Navigation("Website");
+                });
+
+            modelBuilder.Entity("WebTrack.Data.Entities.TrackedEvent", b =>
+                {
+                    b.HasOne("WebTrack.Data.Entities.Session", "Session")
+                        .WithMany("TrackedEvents")
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Session");
+                });
+
+            modelBuilder.Entity("WebTrack.Data.Entities.Session", b =>
+                {
+                    b.Navigation("TrackedEvents");
                 });
 
             modelBuilder.Entity("WebTrack.Data.Entities.Visitor", b =>

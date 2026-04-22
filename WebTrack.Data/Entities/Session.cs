@@ -10,6 +10,8 @@
         public Guid VisitorId { get; set; }
         public Visitor Visitor { get; set; } = null!;
 
+        public ICollection<TrackedEvent> TrackedEvents { get; set; } = new List<TrackedEvent>();
+
         public DateTime StartedAtUtc { get; set; } = DateTime.UtcNow;
         public DateTime? EndedAtUtc { get; set; }
 

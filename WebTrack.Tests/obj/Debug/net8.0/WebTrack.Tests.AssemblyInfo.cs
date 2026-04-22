@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebTrack.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+564486c596ef47da45c03cdf6ab434087eed57ed")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0cefd58be72f4d6101750d0798c668e471146fae")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebTrack.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebTrack.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
