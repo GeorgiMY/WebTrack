@@ -345,6 +345,10 @@ namespace WebTrack.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ConnectionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("FirstSeenAt")
                         .HasColumnType("datetime2");
 

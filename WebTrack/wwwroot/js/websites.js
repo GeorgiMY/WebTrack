@@ -46,10 +46,26 @@
 
             const iframe = document.getElementById(`iframe-${theVisitorId}`);
 
-            if (iframe.srcdoc != "") return;
-
-            if (iframe) {
+            if (iframe && iframe.srcdoc == "") {
                 iframe.srcdoc = theInnerHTML;
+
+                const pathSegments = window.location.pathname.split('/');
+                const currentWebsiteId = pathSegments[pathSegments.length-1];
+
+                let trackingData = {
+                    ConnectionId: theVisitorId,
+                    WebsiteId: currentWebsiteId
+                }
+
+                let baseUrl = window.location.origin;
+
+                fetch(`${baseUrl}/Visitors/Create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(trackingData)
+                }).catch(err => console.error("WebTrack start failed:", err));
             }
 
             return;

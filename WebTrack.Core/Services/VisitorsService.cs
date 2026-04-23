@@ -17,7 +17,17 @@ namespace WebTrack.Core.Services
 
         public async Task EndSessionAsync(string connectionId)
         {
-            Session? session = await _context.Sessions.FirstOrDefaultAsync(s => s.Id.ToString() == connectionId);
+            Visitor? visitor = await _context.Visitors
+                .Include(v => v.Sessions)
+                .FirstOrDefaultAsync(v => v.ConnectionId == connectionId);
+
+            if (visitor == null) return;
+
+            Session? session = visitor.Sessions
+                .Where(s => s.EndedAtUtc == null)
+                .OrderByDescending(s => s.StartedAtUtc)
+                .FirstOrDefault();
+
             if (session != null)
             {
                 session.EndedAtUtc = DateTime.UtcNow;
@@ -55,41 +65,26 @@ namespace WebTrack.Core.Services
             return allVisitors;
         }
 
-        public async Task LogVisitorActivityAsync(string websiteId, Guid visitorId, string connectionId, string userAgent, string url, string screenResolution)
+        public async Task LogVisitorActivityAsync(string connectionId, string websiteId, string userAgent)
         {
             Website? website = await _context.Websites.FirstOrDefaultAsync(w => w.Id.ToString() == websiteId);
-            
             if (website == null) return;
 
-            // Check if this is a brand new Visitor
-            Visitor? visitor = await _context.Visitors.FindAsync(visitorId);
+            Visitor? visitor = await _context.Visitors
+                .Include(v => v.Websites)
+                .FirstOrDefaultAsync(v => v.ConnectionId == connectionId);
+
             if (visitor == null)
             {
-                visitor = new Visitor
-                {
-                    Id = visitorId,
-                    UserAgent = userAgent
-                };
-                _context.Visitors.Add(visitor);
+                visitor = new Visitor { ConnectionId = connectionId, UserAgent = userAgent };
+                await _context.Visitors.AddAsync(visitor);
             }
 
-            // Find active session or create a new one
-            Session? session = await _context.Sessions.FirstOrDefaultAsync(s => s.Id.ToString() == connectionId);
+            if (!visitor.Websites.Any(w => w.Id == website.Id))
+                visitor.Websites.Add(website);
 
-            if (session == null)
-            {
-                session = new Session
-                {
-                    Id = Guid.NewGuid(),
-                    WebsiteId = website.Id,
-                    VisitorId = visitor.Id,  
-                };
-                _context.Sessions.Add(session);
-            }
-            else
-            {
-                // Just update the heartbeat
-            }
+            Session session = new Session { WebsiteId = website.Id, Browser = "Unknown", Os = "Unknown", DeviceType = "Unknown", Referrer = "Unkown", LandingPagePath = "Unknown" };
+            visitor.Sessions.Add(session);
 
             await _context.SaveChangesAsync();
         }

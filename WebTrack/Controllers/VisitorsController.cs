@@ -1,22 +1,26 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using WebTrack.Core.Contracts;
+using WebTrack.Core.DTOs.Sessions;
 using WebTrack.Core.DTOs.Visitors;
 using WebTrack.Data.Entities;
 
 namespace WebTrack.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class VisitorsController : Controller
     {
         private readonly IVisitorsService _visitorsService;
         private readonly UserManager<User> _userManager;
+        private readonly ILogger<VisitorsController> _logger;
 
-        public VisitorsController(IVisitorsService visitorsService, UserManager<User> userManager)
+        public VisitorsController(IVisitorsService visitorsService, UserManager<User> userManager, ILogger<VisitorsController> logger)
         {
             _visitorsService = visitorsService;
             _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -37,6 +41,32 @@ namespace WebTrack.Controllers
             }
 
             return View(visitorListItemDtos);
+        }
+
+        [AllowAnonymous]
+        [IgnoreAntiforgeryToken]
+        [HttpPost("Visitors/Create")]
+        public async Task<IActionResult> Create([FromBody] VisitorTrackingDto dto)
+        {
+            if (dto == null || string.IsNullOrEmpty(dto.WebsiteId)) return BadRequest();
+
+            // Grab the User-Agent directly from the HTTP Request headers
+            string userAgent = Request.Headers.UserAgent.ToString();
+
+            await _visitorsService.LogVisitorActivityAsync(dto.ConnectionId, dto.WebsiteId, userAgent);
+
+            return Ok();
+        }
+
+        // 2. Endpoint to catch the session disconnect
+        [AllowAnonymous]
+        [HttpPost("Visitors/EndSession")]
+        public async Task<IActionResult> EndSession([FromBody] EndSessionDto dto)
+        {
+            if (dto == null || string.IsNullOrEmpty(dto.ConnectionId)) return BadRequest();
+
+            await _visitorsService.EndSessionAsync(dto.ConnectionId);
+            return Ok();
         }
     }
 }

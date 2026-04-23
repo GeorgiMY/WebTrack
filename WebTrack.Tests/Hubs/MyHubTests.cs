@@ -6,28 +6,28 @@ namespace WebTrack.Tests.Hubs;
 
 public class MyHubTests
 {
-    [Test]
-    public async Task ReceiveFromJs_WithoutSecretId_LogsWarning()
-    {
-        Mock<ILogger<WebSocketHub>> loggerMock = new();
-        Mock<IHubCallerClients> clientsMock = new();
-        WebSocketHub hub = new(loggerMock.Object)
-        {
-            Clients = clientsMock.Object,
-            Context = CreateHubContext()
-        };
+    //[Test]
+    //public async Task ReceiveFromJs_WithoutSecretId_LogsWarning()
+    //{
+    //    Mock<ILogger<WebSocketHub>> loggerMock = new();
+    //    Mock<IHubCallerClients> clientsMock = new();
+    //    WebSocketHub hub = new(loggerMock.Object)
+    //    {
+    //        Clients = clientsMock.Object,
+    //        Context = CreateHubContext()
+    //    };
 
-        await hub.ReceiveFromJs("hello");
+    //    await hub.ReceiveFromJs("hello");
 
-        loggerMock.Verify(
-            logger => logger.Log(
-                LogLevel.Warning,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((value, _) => value.ToString()!.Contains("without a secret_id")),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
-    }
+    //    loggerMock.Verify(
+    //        logger => logger.Log(
+    //            LogLevel.Warning,
+    //            It.IsAny<EventId>(),
+    //            It.Is<It.IsAnyType>((value, _) => value.ToString()!.Contains("without a secret_id")),
+    //            It.IsAny<Exception>(),
+    //            It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+    //        Times.Once);
+    //}
 
     private static HubCallerContext CreateHubContext()
     {

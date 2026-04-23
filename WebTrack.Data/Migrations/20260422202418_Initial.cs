@@ -55,6 +55,7 @@ namespace WebTrack.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ConnectionId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserAgent = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstSeenAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

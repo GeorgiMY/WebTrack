@@ -12,7 +12,7 @@ using WebTrack.Data;
 namespace WebTrack.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260422083052_Initial")]
+    [Migration("20260422202418_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -347,6 +347,10 @@ namespace WebTrack.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConnectionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("FirstSeenAt")
                         .HasColumnType("datetime2");
