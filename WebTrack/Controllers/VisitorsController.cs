@@ -57,16 +57,5 @@ namespace WebTrack.Controllers
 
             return Ok();
         }
-
-        // 2. Endpoint to catch the session disconnect
-        [AllowAnonymous]
-        [HttpPost("Visitors/EndSession")]
-        public async Task<IActionResult> EndSession([FromBody] EndSessionDto dto)
-        {
-            if (dto == null || string.IsNullOrEmpty(dto.ConnectionId)) return BadRequest();
-
-            await _visitorsService.EndSessionAsync(dto.ConnectionId);
-            return Ok();
-        }
     }
 }

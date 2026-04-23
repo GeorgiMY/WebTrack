@@ -20,11 +20,9 @@ namespace WebTrack.Core.Services
                 .Select(trackedEvent => new TrackedEventListItemDto
                 {
                     Id = trackedEvent.Id,
-                    ElementData = trackedEvent.ElementData,
                     EventType = trackedEvent.EventType,
                     OccurredAtUtc = trackedEvent.OccurredAt,
-                    SessionId = trackedEvent.SessionId,
-                    TargetUrl = trackedEvent.TargetUrl
+                    SessionId = trackedEvent.SessionId
                 })
                 .ToListAsync();
 

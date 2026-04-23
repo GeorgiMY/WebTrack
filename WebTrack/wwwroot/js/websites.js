@@ -41,31 +41,35 @@
         // HANDLE HTML INJECTION (If the payload contains the DOM)
         if (typeof data === "string" && data.includes("<body>")) {
             const splitData = data.split("|");
-            const theInnerHTML = splitData[splitData.length - 1];
+            let theInnerHTML = splitData[splitData.length - 1];
             const theVisitorId = splitData[splitData.length - 2];
 
             const iframe = document.getElementById(`iframe-${theVisitorId}`);
 
-            if (iframe && iframe.srcdoc == "") {
+            if (iframe) {
+                theInnerHTML = theInnerHTML.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+
                 iframe.srcdoc = theInnerHTML;
 
-                const pathSegments = window.location.pathname.split('/');
-                const currentWebsiteId = pathSegments[pathSegments.length-1];
+                if (iframe.srcdoc == "") {
+                    const pathSegments = window.location.pathname.split('/');
+                    const currentWebsiteId = pathSegments[pathSegments.length-1];
 
-                let trackingData = {
-                    ConnectionId: theVisitorId,
-                    WebsiteId: currentWebsiteId
+                    let trackingData = {
+                        ConnectionId: theVisitorId,
+                        WebsiteId: currentWebsiteId
+                    }
+
+                    let baseUrl = window.location.origin;
+
+                    fetch(`${baseUrl}/Visitors/Create`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(trackingData)
+                    }).catch(err => console.error("WebTrack start failed:", err));
                 }
-
-                let baseUrl = window.location.origin;
-
-                fetch(`${baseUrl}/Visitors/Create`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(trackingData)
-                }).catch(err => console.error("WebTrack start failed:", err));
             }
 
             return;
@@ -74,6 +78,8 @@
         // HANDLE CURSOR & METADATA
         try {
             const parsedData = JSON.parse(data);
+            // Debug
+            //console.log(parsedData);
 
             if (!activeVisitors.includes(parsedData.visitorId)) {
                 activeVisitors.push(parsedData.visitorId);
@@ -144,13 +150,74 @@
             }
 
             // UPDATE CURSOR POSITION
-            if (parsedData.x !== undefined && parsedData.y !== undefined) {
+            if (parsedData.percentX !== undefined && parsedData.percentY !== undefined) {
                 const cursorElement = document.getElementById(`cursor-${parsedData.visitorId}`);
-                if (cursorElement) {
+                const scalerElement = document.getElementById(`scale-container-${parsedData.visitorId}`);
+                const wrapperElement = document.getElementById(`screen-wrapper-${parsedData.visitorId}`);
+
+                if (cursorElement && scalerElement && wrapperElement) {
                     if (cursorElement.style.display === "none") {
                         cursorElement.style.display = "block";
                     }
-                    cursorElement.style.transform = `translate(${parsedData.x}px, ${parsedData.y}px)`;
+
+                    // Resize the iframe dynamically to match the visitor's exact screen size.
+                    // This ensures mobile visitors look like mobile, and desktop looks like desktop!
+                    if (parsedData.visitorWidth && parsedData.visitorHeight) {
+                        scalerElement.style.width = `${parsedData.visitorWidth}px`;
+                        scalerElement.style.height = `${parsedData.visitorHeight}px`;
+
+                        // Instantly recalculate the wrapper scaling so it doesn't clip out of bounds
+                        const widthRatio = wrapperElement.clientWidth / parsedData.visitorWidth;
+                        const heightRatio = wrapperElement.clientHeight / parsedData.visitorHeight;
+                        const scaleFactor = Math.min(widthRatio, heightRatio);
+                        scalerElement.style.transform = `scale(${scaleFactor})`;
+                    }
+
+                    // Apply the cursor based on the percentages of the container's dimensions
+                    const targetX = scalerElement.clientWidth * parsedData.percentX;
+                    const targetY = scalerElement.clientHeight * parsedData.percentY;
+
+                    cursorElement.style.transform = `translate(${targetX}px, ${targetY}px)`;
+                }
+            }
+
+            // DRAW RED CLICK RIPPLE
+            if (parsedData.type === "mousedown" || parsedData.type === "click") {
+                const container = document.getElementById(`scale-container-${parsedData.visitorId}`);
+
+                if (container && parsedData.percentX !== undefined && parsedData.percentY !== undefined) {
+                    // Create the circle
+                    const ripple = document.createElement('div');
+                    ripple.style.position = 'absolute';
+                    ripple.style.width = '20px';
+                    ripple.style.height = '20px';
+                    ripple.style.background = 'rgba(255, 0, 0, 0.6)'; // Red with some transparency
+                    ripple.style.borderRadius = '50%';
+                    ripple.style.pointerEvents = 'none'; // So it doesn't block your own clicks
+                    ripple.style.zIndex = '9999'; // Force it to the top
+
+                    // Calculate exact pixel position using the percentages
+                    const targetX = container.clientWidth * parsedData.percentX;
+                    const targetY = container.clientHeight * parsedData.percentY;
+
+                    // Center the 20x20px circle precisely on the click coordinates (-10px offset)
+                    ripple.style.left = `${targetX - 10}px`;
+                    ripple.style.top = `${targetY - 10}px`;
+
+                    // Start tiny
+                    ripple.style.transform = 'scale(0)';
+                    ripple.style.transition = 'transform 0.4s ease-out, opacity 0.4s ease-out';
+
+                    container.appendChild(ripple);
+
+                    // Animate it expanding and fading out
+                    requestAnimationFrame(() => {
+                        ripple.style.transform = 'scale(3)';
+                        ripple.style.opacity = '0';
+                    });
+
+                    // Remove it from the DOM after the animation finishes
+                    setTimeout(() => ripple.remove(), 400);
                 }
             }
 

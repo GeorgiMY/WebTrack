@@ -6,9 +6,7 @@
 
         public string EventType { get; set; } = string.Empty;
 
-        public string TargetUrl { get; set; } = string.Empty;
-
-        public string? ElementData { get; set; }
+        public int EventFiredTimes { get; set; }
 
         public DateTime OccurredAtUtc { get; set; }
 

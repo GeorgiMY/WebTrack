@@ -34,9 +34,9 @@ namespace WebTrack.Hubs
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            await _visitorsService.EndSessionAsync(Context.ConnectionId);
+            //await _visitorsService.EndSessionAsync(Context.ConnectionId);
 
-            await base.OnDisconnectedAsync(exception);
+            //await base.OnDisconnectedAsync(exception);
         }
     }
 }
