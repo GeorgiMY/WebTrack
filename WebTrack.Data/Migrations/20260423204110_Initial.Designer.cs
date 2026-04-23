@@ -12,7 +12,7 @@ using WebTrack.Data;
 namespace WebTrack.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260422202418_Initial")]
+    [Migration("20260423204110_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -249,10 +249,8 @@ namespace WebTrack.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ElementData")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                    b.Property<int>("EventFiredTimes")
+                        .HasColumnType("int");
 
                     b.Property<string>("EventType")
                         .IsRequired()
@@ -264,11 +262,6 @@ namespace WebTrack.Data.Migrations
 
                     b.Property<Guid>("SessionId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TargetUrl")
-                        .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("nvarchar(2048)");
 
                     b.HasKey("Id");
 

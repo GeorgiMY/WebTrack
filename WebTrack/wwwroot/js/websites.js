@@ -49,8 +49,6 @@
             if (iframe) {
                 theInnerHTML = theInnerHTML.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 
-                iframe.srcdoc = theInnerHTML;
-
                 if (iframe.srcdoc == "") {
                     const pathSegments = window.location.pathname.split('/');
                     const currentWebsiteId = pathSegments[pathSegments.length-1];
@@ -70,6 +68,8 @@
                         body: JSON.stringify(trackingData)
                     }).catch(err => console.error("WebTrack start failed:", err));
                 }
+
+                iframe.srcdoc = theInnerHTML;
             }
 
             return;

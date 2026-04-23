@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using System.Text.Json;
 using WebTrack.Core.Contracts;
+using WebTrack.Core.Services;
 
 namespace WebTrack.Hubs
 {
@@ -7,11 +9,13 @@ namespace WebTrack.Hubs
     {
         private readonly ILogger<WebSocketHub> _logger;
         private readonly IVisitorsService _visitorsService;
+        private readonly ITrackedEventsService _trackedEventsService;
 
-        public WebSocketHub(ILogger<WebSocketHub> logger, IVisitorsService visitorsService)
+        public WebSocketHub(ILogger<WebSocketHub> logger, IVisitorsService visitorsService, ITrackedEventsService trackedEventsService)
         {
             _logger = logger;
             _visitorsService = visitorsService;
+            _trackedEventsService = trackedEventsService;
         }
 
         public async Task ReceiveFromJs(string message)
@@ -26,6 +30,29 @@ namespace WebTrack.Hubs
             else
             {
                 _logger.LogWarning("Received message from a connection without a secret_id.");
+            }
+
+            try
+            {
+                using var document = JsonDocument.Parse(message);
+                var root = document.RootElement;
+
+                if (root.TryGetProperty("type", out var eventTypeElement) && root.TryGetProperty("visitorId", out var visitorIdElement))
+                {
+                    string? eventType = eventTypeElement.GetString();
+                    string? visitorId = visitorIdElement.GetString();
+
+                    // Only log meaningful interactions to SQL!
+                    //if (eventType != "MOUSE_MOVE" && eventType != "DOM_UPDATE")
+                    //{
+                        // Fire and forget the database save
+                        await _trackedEventsService.LogEventAsync(visitorId, eventType);
+                    //}
+                }
+            }
+            catch (JsonException)
+            {
+                // Ignore parsing errors from weird payloads, just keep the hub alive
             }
 
             // For debugging

@@ -86,13 +86,6 @@ namespace WebTrack.Data
                       .IsRequired()
                       .HasMaxLength(50);
 
-                entity.Property(trackedEvent => trackedEvent.TargetUrl)
-                      .IsRequired()
-                      .HasMaxLength(2048);
-
-                entity.Property(trackedEvent => trackedEvent.ElementData)
-                      .HasMaxLength(1000);
-
                 entity.Property(trackedEvent => trackedEvent.OccurredAt)
                       .IsRequired();
 

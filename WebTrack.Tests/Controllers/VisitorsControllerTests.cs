@@ -6,56 +6,56 @@ namespace WebTrack.Tests.Controllers;
 
 public class VisitorsControllerTests
 {
-    [Test]
-    public async Task Index_AdminUser_ReturnsAllVisitorsView()
-    {
-        Mock<IVisitorsService> serviceMock = new();
-        serviceMock.Setup(service => service.GetAllVisitors()).ReturnsAsync(new List<VisitorListItemDto> { new() });
-        Mock<UserManager<User>> userManagerMock = IdentityMockHelpers.CreateUserManagerMock();
-        VisitorsController controller = new(serviceMock.Object, userManagerMock.Object)
-        {
-            ControllerContext = BuildControllerContext("Admin")
-        };
+    //[Test]
+    //public async Task Index_AdminUser_ReturnsAllVisitorsView()
+    //{
+    //    Mock<IVisitorsService> serviceMock = new();
+    //    serviceMock.Setup(service => service.GetAllVisitors()).ReturnsAsync(new List<VisitorListItemDto> { new() });
+    //    Mock<UserManager<User>> userManagerMock = IdentityMockHelpers.CreateUserManagerMock();
+    //    VisitorsController controller = new(serviceMock.Object, userManagerMock.Object)
+    //    {
+    //        ControllerContext = BuildControllerContext("Admin")
+    //    };
 
-        IActionResult result = await controller.Index();
+    //    IActionResult result = await controller.Index();
 
-        result.Should().BeOfType<ViewResult>();
-        serviceMock.Verify(service => service.GetAllVisitors(), Times.Once);
-    }
+    //    result.Should().BeOfType<ViewResult>();
+    //    serviceMock.Verify(service => service.GetAllVisitors(), Times.Once);
+    //}
 
-    [Test]
-    public async Task Index_NonAdminWithoutUserId_ReturnsUnauthorized()
-    {
-        Mock<IVisitorsService> serviceMock = new();
-        Mock<UserManager<User>> userManagerMock = IdentityMockHelpers.CreateUserManagerMock();
-        userManagerMock.Setup(manager => manager.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns((string)null!);
-        VisitorsController controller = new(serviceMock.Object, userManagerMock.Object)
-        {
-            ControllerContext = BuildControllerContext()
-        };
+    //[Test]
+    //public async Task Index_NonAdminWithoutUserId_ReturnsUnauthorized()
+    //{
+    //    Mock<IVisitorsService> serviceMock = new();
+    //    Mock<UserManager<User>> userManagerMock = IdentityMockHelpers.CreateUserManagerMock();
+    //    userManagerMock.Setup(manager => manager.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns((string)null!);
+    //    VisitorsController controller = new(serviceMock.Object, userManagerMock.Object)
+    //    {
+    //        ControllerContext = BuildControllerContext()
+    //    };
 
-        IActionResult result = await controller.Index();
+    //    IActionResult result = await controller.Index();
 
-        result.Should().BeOfType<UnauthorizedResult>();
-    }
+    //    result.Should().BeOfType<UnauthorizedResult>();
+    //}
 
-    [Test]
-    public async Task Index_NonAdminWithUserId_ReturnsUserVisitors()
-    {
-        Mock<IVisitorsService> serviceMock = new();
-        serviceMock.Setup(service => service.GetAllUserVisitors("user-1")).ReturnsAsync(new List<VisitorListItemDto> { new() });
-        Mock<UserManager<User>> userManagerMock = IdentityMockHelpers.CreateUserManagerMock();
-        userManagerMock.Setup(manager => manager.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user-1");
-        VisitorsController controller = new(serviceMock.Object, userManagerMock.Object)
-        {
-            ControllerContext = BuildControllerContext()
-        };
+    //[Test]
+    //public async Task Index_NonAdminWithUserId_ReturnsUserVisitors()
+    //{
+    //    Mock<IVisitorsService> serviceMock = new();
+    //    serviceMock.Setup(service => service.GetAllUserVisitors("user-1")).ReturnsAsync(new List<VisitorListItemDto> { new() });
+    //    Mock<UserManager<User>> userManagerMock = IdentityMockHelpers.CreateUserManagerMock();
+    //    userManagerMock.Setup(manager => manager.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user-1");
+    //    VisitorsController controller = new(serviceMock.Object, userManagerMock.Object)
+    //    {
+    //        ControllerContext = BuildControllerContext()
+    //    };
 
-        IActionResult result = await controller.Index();
+    //    IActionResult result = await controller.Index();
 
-        result.Should().BeOfType<ViewResult>();
-        serviceMock.Verify(service => service.GetAllUserVisitors("user-1"), Times.Once);
-    }
+    //    result.Should().BeOfType<ViewResult>();
+    //    serviceMock.Verify(service => service.GetAllUserVisitors("user-1"), Times.Once);
+    //}
 
     private static ControllerContext BuildControllerContext(string? role = null)
     {

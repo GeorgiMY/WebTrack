@@ -272,8 +272,7 @@ namespace WebTrack.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SessionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EventType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TargetUrl = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
-                    ElementData = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    EventFiredTimes = table.Column<int>(type: "int", nullable: false),
                     OccurredAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

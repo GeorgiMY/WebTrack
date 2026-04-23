@@ -43,6 +43,9 @@ namespace WebTrack.Core.Services
                         .Any(user => user.Id == currentUserId)))
                 .Select(visitorListItemDto => new VisitorListItemDto
                 {
+                    ConnectionId = visitorListItemDto.ConnectionId,
+                    FirstSeenAt = visitorListItemDto.FirstSeenAt,
+                    UserAgent = visitorListItemDto.UserAgent,
                     Sessions = visitorListItemDto.Sessions,
                     Websites = visitorListItemDto.Websites
                 })
@@ -57,6 +60,9 @@ namespace WebTrack.Core.Services
             List<VisitorListItemDto> allVisitors = await _context.Visitors
                 .Select(visitor => new VisitorListItemDto
                 {
+                    ConnectionId = visitor.ConnectionId,
+                    FirstSeenAt = visitor.FirstSeenAt,
+                    UserAgent = visitor.UserAgent,
                     Websites = visitor.Websites,
                     Sessions = visitor.Sessions,
                 })
@@ -83,9 +89,9 @@ namespace WebTrack.Core.Services
             if (!visitor.Websites.Any(w => w.Id == website.Id))
                 visitor.Websites.Add(website);
 
-            Session session = new Session { WebsiteId = website.Id, Browser = "Unknown", Os = "Unknown", DeviceType = "Unknown", Referrer = "Unkown", LandingPagePath = "Unknown" };
-            visitor.Sessions.Add(session);
+            Session session = new Session { WebsiteId = website.Id, VisitorId = visitor.Id, Browser = "Unknown", Os = "Unknown", DeviceType = "Unknown", Referrer = "Unknown", LandingPagePath = "Unknown" };
 
+            await _context.Sessions.AddAsync(session);
             await _context.SaveChangesAsync();
         }
     }

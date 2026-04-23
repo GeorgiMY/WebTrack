@@ -8,50 +8,105 @@
 
 <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
     <div>
-        <h2 class="fw-bold text-dark mb-1">Visitors</h2>
-        <p class="text-muted mb-0">Track unique visitors across your websites.</p>
+        <h2 class="fw-bold text-dark mb-1"><i class="bi bi-people text-primary me-2"></i>Visitors</h2>
+        <p class="text-muted mb-0">Track unique visitors and their journey across your websites.</p>
+    </div>
+    <div class="badge bg-light text-dark border px-3 py-2 rounded-pill shadow-sm">
+        <i class="bi bi-bar-chart-fill text-primary me-1"></i> Total Visitors: @Model.Count()
     </div>
 </div>
 
 <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
-    <div style="height: 6px; background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);"></div>
+    <div style="height: 4px; background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);"></div>
 
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="bg-light text-muted small text-uppercase" style="letter-spacing: 0.5px;">
-                <tr>
-                    <th class="py-3 ps-4 border-bottom-0">Visited Websites</th>
-                    <th class="py-3 border-bottom-0">Session History</th>
-                </tr>
-            </thead>
-            <tbody class="border-top-0">
-                @foreach (VisitorListItemDto visitor in Model)
-                {
+    @if (!Model.Any())
+    {
+        <div class="card-body text-center py-5">
+            <div class="display-1 text-muted mb-3 opacity-25">
+                <i class="bi bi-inbox"></i>
+            </div>
+            <h5 class="fw-bold text-dark">No visitors found</h5>
+            <p class="text-muted">Once your tracking script is installed, visitors will appear here.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-muted small text-uppercase" style="letter-spacing: 0.5px;">
                     <tr>
-                        <td class="ps-4 py-3">
-                            <div class="d-flex flex-column gap-1">
-                                @foreach (Website website in visitor.Websites)
-                                {
-                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill text-start w-auto" style="width: fit-content;">
-                                        <i class="bi bi-window-sidebar me-1"></i> @website.Name <span class="text-muted fw-normal ms-1">(@website.BaseUrl)</span>
-                                    </span>
-                                }
-                            </div>
-                        </td>
-                        <td class="py-3">
-                            <ul class="list-unstyled mb-0 small">
-                                @foreach (Session session in visitor.Sessions)
-                                {
-                                    <li class="mb-1 text-secondary">
-                                        <i class="bi bi-box-arrow-in-right text-success me-1"></i> <strong>@session.LandingPagePath</strong>
-                                        <span class="text-muted fst-italic">(via @(string.IsNullOrEmpty(session.Referrer) ? "Direct" : session.Referrer))</span>
-                                    </li>
-                                }
-                            </ul>
-                        </td>
+                        <th class="py-3 ps-4 border-bottom-0" style="width: 25%;">Visitor Identity</th>
+                        <th class="py-3 border-bottom-0" style="width: 30%;">Visited Websites</th>
+                        <th class="py-3 border-bottom-0" style="width: 45%;">Session History</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody class="border-top-0">
+                    @foreach (VisitorListItemDto visitor in Model.OrderByDescending(v => v.FirstSeenAt))
+                    {
+                        <tr>
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 45px; height: 45px;">
+                                        <i class="bi bi-person-fill fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark font-monospace" style="font-size: 0.95rem;">
+                                            @visitor.ConnectionId.Substring(0, Math.Min(8, visitor.ConnectionId.Length)).ToUpper()
+                                        </div>
+                                        <div class="text-muted small">
+                                            <i class="bi bi-clock me-1"></i> First seen: @visitor.FirstSeenAt.ToLocalTime().ToString("MMM dd, yyyy")
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="py-3">
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (Website website in visitor.Websites)
+                                    {
+                                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill py-2 px-3 text-start fw-medium shadow-sm">
+                                            <i class="bi bi-globe2 me-1"></i> @website.Name
+                                        </span>
+                                    }
+                                </div>
+                            </td>
+
+                            <td class="py-3 pe-4">
+                                @if (visitor.Sessions.Any())
+                                {
+                                    <div class="border rounded-3 p-0 overflow-hidden" style="max-height: 140px; overflow-y: auto; background: #f8f9fa;">
+                                        <ul class="list-group list-group-flush mb-0 small">
+                                            @foreach (Session session in visitor.Sessions.OrderByDescending(s => s.StartedAtUtc))
+                                            {
+                                                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-2 px-3">
+                                                    <div>
+                                                        <div class="fw-semibold text-dark mb-1">
+                                                            <i class="bi bi-box-arrow-in-right text-success me-1"></i> @session.LandingPagePath
+                                                        </div>
+                                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                                            <i class="bi bi-display me-1"></i> @session.Browser on @session.Os
+                                                            <span class="mx-1">•</span>
+                                                            <span class="fst-italic">via @(string.IsNullOrEmpty(session.Referrer) ? "Direct" : session.Referrer)</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-end text-muted font-monospace" style="font-size: 0.75rem;">
+                                                        @session.StartedAtUtc.ToLocalTime().ToString("MMM dd")<br />
+                                                        @session.StartedAtUtc.ToLocalTime().ToString("HH:mm")
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small fst-italic">No sessions recorded yet.</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>

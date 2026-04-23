@@ -6,5 +6,6 @@ namespace WebTrack.Core.Contracts
     {
         Task<List<TrackedEventListItemDto>> GetAllUserTrackedEvents(string currentUserId);
         Task<List<TrackedEventListItemDto>> GetAllTrackedEvents();
+        Task LogEventAsync(string visitorId, string eventType);
     }
 }
