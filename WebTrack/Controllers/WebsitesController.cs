@@ -53,10 +53,17 @@ namespace WebTrack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(WebsiteCreateDto websiteCreateDto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+            {
+                return View(websiteCreateDto);
+            }
             
             Website? website = await _context.Websites.Where(website => website.BaseUrl == websiteCreateDto.BaseUrl).FirstOrDefaultAsync();
-            if (website != null) return View(websiteCreateDto);
+            if (website != null)
+            {
+                ModelState.AddModelError(nameof(websiteCreateDto.BaseUrl), "A website with this URL already exists.");
+                return View(websiteCreateDto);
+            }
 
             User? currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null) return Unauthorized();

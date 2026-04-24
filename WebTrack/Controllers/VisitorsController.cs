@@ -64,7 +64,15 @@ namespace WebTrack.Controllers
         [HttpPost("Visitors/Create")]
         public async Task<IActionResult> Create([FromBody] VisitorTrackingDto dto)
         {
-            if (dto == null || string.IsNullOrEmpty(dto.WebsiteId)) return BadRequest();
+            if (dto == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             // Grab the User-Agent directly from the HTTP Request headers
             string userAgent = Request.Headers.UserAgent.ToString();
