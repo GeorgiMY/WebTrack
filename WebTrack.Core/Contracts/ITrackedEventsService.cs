@@ -6,6 +6,7 @@ namespace WebTrack.Core.Contracts
     {
         Task<List<TrackedEventListItemDto>> GetAllUserTrackedEvents(string currentUserId);
         Task<List<TrackedEventListItemDto>> GetAllTrackedEvents();
+        Task<bool> DeleteSessionTrackedEventsAsync(Guid sessionId, string? currentUserId, bool isAdmin);
         Task LogEventAsync(string visitorId, string eventType);
     }
 }

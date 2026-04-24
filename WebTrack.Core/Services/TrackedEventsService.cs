@@ -22,6 +22,8 @@ namespace WebTrack.Core.Services
                 .Select(trackedEvent => new TrackedEventListItemDto
                 {
                     Id = trackedEvent.Id,
+                    WebsiteId = trackedEvent.Session.WebsiteId,
+                    WebsiteName = trackedEvent.Session.Website.Name,
                     EventType = trackedEvent.EventType,
                     EventFiredTimes = trackedEvent.EventFiredTimes,
                     OccurredAtUtc = trackedEvent.OccurredAt,
@@ -39,12 +41,39 @@ namespace WebTrack.Core.Services
                 .Select(trackedEvent => new TrackedEventListItemDto
                 {
                     Id = trackedEvent.Id,
+                    WebsiteId = trackedEvent.Session.WebsiteId,
+                    WebsiteName = trackedEvent.Session.Website.Name,
                     EventType = trackedEvent.EventType,
                     EventFiredTimes = trackedEvent.EventFiredTimes,
                     OccurredAtUtc = trackedEvent.OccurredAt,
                     SessionId = trackedEvent.SessionId
                 })
                 .ToListAsync();
+        }
+
+        public async Task<bool> DeleteSessionTrackedEventsAsync(Guid sessionId, string? currentUserId, bool isAdmin)
+        {
+            var query = _context.TrackedEvents.Where(trackedEvent => trackedEvent.SessionId == sessionId);
+
+            if (!isAdmin)
+            {
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                {
+                    return false;
+                }
+
+                query = query.Where(trackedEvent => trackedEvent.Session.Website.Users.Any(user => user.Id == currentUserId));
+            }
+
+            var trackedEvents = await query.ToListAsync();
+            if (!trackedEvents.Any())
+            {
+                return false;
+            }
+
+            _context.TrackedEvents.RemoveRange(trackedEvents);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task LogEventAsync(string visitorId, string eventType)

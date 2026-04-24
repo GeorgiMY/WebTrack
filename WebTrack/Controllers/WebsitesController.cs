@@ -39,7 +39,6 @@ namespace WebTrack.Controllers
 
                 websiteDtos = await _websitesService.GetAllUserWebsites(currentUserId);
             }
-            List<string> websiteIds = websiteDtos.Select(website => website.Id.ToString()).ToList();
 
             return View(websiteDtos);
         }
@@ -54,8 +53,6 @@ namespace WebTrack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(WebsiteCreateDto websiteCreateDto)
         {
-            // Checks
-            //----------------------------------------------------------
             if (!ModelState.IsValid) return BadRequest(ModelState);
             
             Website? website = await _context.Websites.Where(website => website.BaseUrl == websiteCreateDto.BaseUrl).FirstOrDefaultAsync();
@@ -63,7 +60,6 @@ namespace WebTrack.Controllers
 
             User? currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null) return Unauthorized();
-            //----------------------------------------------------------
 
             website = new Website()
             {
@@ -76,6 +72,55 @@ namespace WebTrack.Controllers
 
             await _context.Websites.AddAsync(website);
             await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            string? currentUserId = _userManager.GetUserId(User);
+            bool isAdmin = User.IsInRole("Admin");
+
+            WebsiteEditDto? website = await _websitesService.GetWebsiteAsync(id, currentUserId, isAdmin);
+            if (website == null) return NotFound();
+
+            return View(website);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(WebsiteEditDto websiteEditDto)
+        {
+            if (!ModelState.IsValid) return View("Edit", websiteEditDto);
+
+            string? currentUserId = _userManager.GetUserId(User);
+            bool isAdmin = User.IsInRole("Admin");
+
+            if (!isAdmin && string.IsNullOrWhiteSpace(currentUserId)) return Unauthorized();
+
+            bool updated = await _websitesService.UpdateWebsiteAsync(websiteEditDto, currentUserId, isAdmin);
+            if (!updated)
+            {
+                ModelState.AddModelError(string.Empty, "Unable to update website. Make sure the website exists and the base URL is unique.");
+                return View("Edit", websiteEditDto);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            string? currentUserId = _userManager.GetUserId(User);
+            bool isAdmin = User.IsInRole("Admin");
+
+            bool deleted = await _websitesService.DeleteWebsiteAsync(id, currentUserId, isAdmin);
+            if (!deleted)
+            {
+                TempData["ErrorMessage"] = "Website could not be deleted.";
+            }
 
             return RedirectToAction(nameof(Index));
         }

@@ -43,6 +43,7 @@ namespace WebTrack.Core.Services
                         .Any(user => user.Id == currentUserId)))
                 .Select(visitorListItemDto => new VisitorListItemDto
                 {
+                    Id = visitorListItemDto.Id,
                     ConnectionId = visitorListItemDto.ConnectionId,
                     FirstSeenAt = visitorListItemDto.FirstSeenAt,
                     UserAgent = visitorListItemDto.UserAgent,
@@ -60,6 +61,7 @@ namespace WebTrack.Core.Services
             List<VisitorListItemDto> allVisitors = await _context.Visitors
                 .Select(visitor => new VisitorListItemDto
                 {
+                    Id = visitor.Id,
                     ConnectionId = visitor.ConnectionId,
                     FirstSeenAt = visitor.FirstSeenAt,
                     UserAgent = visitor.UserAgent,
@@ -69,6 +71,31 @@ namespace WebTrack.Core.Services
                 .ToListAsync();
 
             return allVisitors;
+        }
+
+        public async Task<bool> DeleteVisitorAsync(Guid visitorId, string? currentUserId, bool isAdmin)
+        {
+            var query = _context.Visitors.AsQueryable();
+
+            if (!isAdmin)
+            {
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                {
+                    return false;
+                }
+
+                query = query.Where(visitor => visitor.Websites.Any(website => website.Users.Any(user => user.Id == currentUserId)));
+            }
+
+            var visitor = await query.FirstOrDefaultAsync(v => v.Id == visitorId);
+            if (visitor == null)
+            {
+                return false;
+            }
+
+            _context.Visitors.Remove(visitor);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task LogVisitorActivityAsync(string connectionId, string websiteId, string userAgent)

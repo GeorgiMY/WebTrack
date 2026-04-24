@@ -1,104 +1,105 @@
 ﻿@using WebTrack.Core.DTOs.Websites
 @model IEnumerable<WebsiteListItemDto>
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebTrack Dashboard</title>
+@{
+    ViewData["Title"] = "Tracked Websites";
+}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="~/css/websites.css" asp-append-version="true" />
+<style>
+    /* Modern Card Styling */
+    .website-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .website-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.1) !important;
+    }
 
-    <style>
-        body {
-            background-color: #f4f6f9; /* Soft background so the white cards pop */
-        }
+    /* Colorful Gradient Accent at the top of the card */
+    .card-accent {
+        height: 6px;
+        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    }
 
-        /* Modern Card Styling */
-        .website-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .website-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.1) !important;
-        }
+    /* Subtle pulse for the "Active" badge */
+    .pulse-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background-color: white;
+        border-radius: 50%;
+        margin-right: 6px;
+        animation: pulse 2s infinite;
+    }
+    @@keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.4; }
+        100% { opacity: 1; }
+    }
+</style>
 
-        /* Colorful Gradient Accent at the top of the card */
-        .card-accent {
-            height: 6px;
-            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-        }
+<div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+    <div>
+        <h2 class="fw-bold text-dark mb-1"><i class="bi bi-globe text-primary me-2"></i>Tracked Websites</h2>
+        <p class="text-muted mb-0">Monitor your real-time analytics and user sessions.</p>
+    </div>
+    <a asp-action="Create" asp-controller="Websites" class="btn btn-primary shadow-sm rounded-pill px-4">
+        <i class="bi bi-plus-lg me-2"></i>Add Website
+    </a>
+</div>
 
-        /* Subtle pulse for the "Active" badge */
-        .pulse-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: white;
-            border-radius: 50%;
-            margin-right: 6px;
-            animation: pulse 2s infinite;
-        }
-        @@keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container py-5">
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger rounded-3" role="alert">
+        @errorMessage
+    </div>
+}
 
-        <div class="d-flex justify-content-between align-items-end mb-5 border-bottom pb-3">
-            <div>
-                <h1 class="fw-bold text-dark mb-1">Tracked Websites</h1>
-                <p class="text-muted mb-0">Monitor your real-time analytics and user sessions.</p>
-            </div>
-            <a asp-action="Create" asp-controller="Websites" class="btn btn-primary shadow-sm rounded-pill px-4">
-                <i class="bi bi-plus-lg me-2"></i>Add Website
-            </a>
-        </div>
+<div class="row g-4">
+    @foreach (WebsiteListItemDto website in Model)
+    {
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card website-card h-100 shadow-sm border-0">
+                <div class="card-accent"></div>
 
-        <div class="row g-4">
-            @foreach (WebsiteListItemDto website in Model)
-            {
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card website-card h-100 shadow-sm border-0">
-                        <div class="card-accent"></div>
+                <div class="card-body p-4 d-flex flex-column">
+                    <h4 class="card-title fw-bold mb-1 text-truncate" title="@website.Name">@website.Name</h4>
+                    <p class="text-muted small mb-4 text-truncate">
+                        <i class="bi bi-link-45deg"></i> @website.BaseUrl
+                    </p>
 
-                        <div class="card-body p-4 d-flex flex-column">
-                            <h4 class="card-title fw-bold mb-1 text-truncate" title="@website.Name">@website.Name</h4>
-                            <p class="text-muted small mb-4 text-truncate">
-                                <i class="bi bi-link-45deg"></i> @website.BaseUrl
-                            </p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-secondary small fw-semibold">Total Visitors</span>
+                            <span class="badge bg-light border text-dark fs-6 rounded-pill px-3">0</span>
+                        </div>
 
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-secondary small fw-semibold">Total Visitors</span>
-                                    <span class="badge bg-light border text-dark fs-6 rounded-pill px-3">0</span>
-                                </div>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span class="text-secondary small fw-semibold">Active Sessions</span>
+                            <span class="badge bg-success rounded-pill px-3 py-2 shadow-sm">
+                                <span class="pulse-dot"></span> 0 Online
+                            </span>
+                        </div>
 
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <span class="text-secondary small fw-semibold">Active Sessions</span>
-                                    <span class="badge bg-success rounded-pill px-3 py-2 shadow-sm">
-                                        <span class="pulse-dot"></span> 0 Online
-                                    </span>
-                                </div>
-
-                                <a asp-action="Details" asp-controller="Websites" asp-route-id="@website.Id" class="btn btn-outline-dark w-100 rounded-pill fw-semibold">
-                                    View Live Dashboard <i class="bi bi-arrow-right ms-1"></i>
-                                </a>
-                            </div>
+                        <div class="d-grid gap-2">
+                            <a asp-action="Details" asp-controller="Websites" asp-route-id="@website.Id" class="btn btn-outline-dark rounded-pill fw-semibold">
+                                View Live Dashboard <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                            <a asp-action="Edit" asp-controller="Websites" asp-route-id="@website.Id" class="btn btn-secondary rounded-pill fw-semibold">
+                                Edit Website
+                            </a>
+                            <form asp-action="Delete" asp-controller="Websites" method="post" class="m-0">
+                                <input type="hidden" name="id" value="@website.Id" />
+                                <button type="submit" class="btn btn-danger rounded-pill fw-semibold" onclick="return confirm('Delete this website?');">
+                                    Delete Website
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-            }
+            </div>
         </div>
-    </div>
-</body>
-</html>
+    }
+</div>

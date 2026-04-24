@@ -22,6 +22,7 @@ namespace WebTrack.Core.Services
                 
                 .Select(session => new SessionListItemDto
                 {
+                    Id = session.Id,
                     WebsiteId = session.WebsiteId,
                     VisitorId = session.VisitorId,
                     StartedAtUtc = session.StartedAtUtc,
@@ -44,6 +45,7 @@ namespace WebTrack.Core.Services
             List<SessionListItemDto> allSessions = await _context.Sessions
                 .Select(visitor => new SessionListItemDto
                 {
+                    Id = visitor.Id,
                     WebsiteId = visitor.WebsiteId,
                     VisitorId = visitor.VisitorId,
                     StartedAtUtc = visitor.StartedAtUtc,
@@ -58,6 +60,31 @@ namespace WebTrack.Core.Services
                 .ToListAsync();
 
             return allSessions;
+        }
+
+        public async Task<bool> DeleteSessionAsync(Guid sessionId, string? currentUserId, bool isAdmin)
+        {
+            var query = _context.Sessions.AsQueryable();
+
+            if (!isAdmin)
+            {
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                {
+                    return false;
+                }
+
+                query = query.Where(session => session.Website.Users.Any(user => user.Id == currentUserId));
+            }
+
+            var session = await query.FirstOrDefaultAsync(s => s.Id == sessionId);
+            if (session == null)
+            {
+                return false;
+            }
+
+            _context.Sessions.Remove(session);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

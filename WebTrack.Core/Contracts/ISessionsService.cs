@@ -6,5 +6,6 @@ namespace WebTrack.Core.Contracts
     {
         Task<List<SessionListItemDto>> GetAllUserSessions(string currentUserId);
         Task<List<SessionListItemDto>> GetAllSessions();
+        Task<bool> DeleteSessionAsync(Guid sessionId, string? currentUserId, bool isAdmin);
     }
 }

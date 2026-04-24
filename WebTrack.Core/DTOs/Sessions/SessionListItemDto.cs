@@ -2,6 +2,7 @@
 {
     public class SessionListItemDto
     {
+        public Guid Id { get; set; }
         public Guid WebsiteId { get; set; }
 
         public Guid VisitorId { get; set; }

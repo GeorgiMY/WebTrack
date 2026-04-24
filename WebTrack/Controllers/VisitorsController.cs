@@ -9,7 +9,7 @@ using WebTrack.Data.Entities;
 
 namespace WebTrack.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class VisitorsController : Controller
     {
         private readonly IVisitorsService _visitorsService;
@@ -41,6 +41,22 @@ namespace WebTrack.Controllers
             }
 
             return View(visitorListItemDtos);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            string? currentUserId = _userManager.GetUserId(User);
+            bool isAdmin = User.IsInRole("Admin");
+
+            bool deleted = await _visitorsService.DeleteVisitorAsync(id, currentUserId, isAdmin);
+            if (!deleted)
+            {
+                TempData["ErrorMessage"] = "Visitor could not be deleted.";
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [AllowAnonymous]

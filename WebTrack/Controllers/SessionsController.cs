@@ -37,5 +37,21 @@ namespace WebTrack.Controllers
 
             return View(sessionListItemDtos);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            string? currentUserId = _userManager.GetUserId(User);
+            bool isAdmin = User.IsInRole("Admin");
+
+            bool deleted = await _sessionsService.DeleteSessionAsync(id, currentUserId, isAdmin);
+            if (!deleted)
+            {
+                TempData["ErrorMessage"] = "Session could not be deleted.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
